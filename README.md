@@ -74,17 +74,45 @@ Neither is required to build or run; the form degrades gracefully without them.
 | `PUBLIC_TURNSTILE_SITE_KEY` | Renders the Turnstile widget on the contact form. Unset → honeypot only. |
 | `TURNSTILE_SECRET_KEY` | Server-side verification in `src/pages/api/contact.ts`. Unset → verification skipped. |
 
+## Deployed
+
+| | |
+|---|---|
+| Repo | https://github.com/deyogroup1034/foundation-prep-site (public) |
+| Vercel | `deyo-group` / `foundation-prep-site` (`prj_UienHOujEy8AMFzkCdsRdsAnmj7l`) |
+| Staging URL | https://foundation-prep-site.vercel.app |
+| Deyo Dash | site `4c21d566-e01f-4d6e-928f-f9395bc3cf88`, client `3d570c97-f017-4da1-8784-88526cb9b67f`, status **review** |
+
+Pushes to `main` deploy automatically. Vercel Authentication is on for
+`all_except_custom_domains`, matching the rest of the fleet — the branch and
+per-deployment URLs need a login, the clean production alias above does not.
+
+The staging alias is crawlable, but **every canonical and `og:url` points at
+`https://foundationprep.com`**, so the pre-launch copy can't outrank or duplicate
+the school's live site.
+
+Verified on the deployment: all 23 pages 200; trailing-slash 308s; demo pages,
+posts, `/team/*`, `/services/*`, `/services_group/*`, `/category/*` and
+`/wp-json/*` all redirecting; `/calendar` and `/2023-24-calendar` →
+`/2025-26-calendar`; PDF attachment pages → their PDFs; sitemap, robots,
+favicons, PDFs and `/wp-content/uploads/...` all serving; all five security
+headers present; uploads served `immutable`; and `/api/contact` running as a
+serverless function (200 valid, 422 invalid).
+
 ## Launch checklist
 
 - [ ] **Lead delivery** — `src/pages/api/contact.ts` logs to the console behind a
       `PLACEHOLDER` comment. Wire it to the Deyo Dash intake webhook and add the
       synthetic form-delivery marker so Dash form monitoring can verify the chain.
       WordPress sent these to `info@foundationprep.com`, subject "Information Request".
-- [ ] **Turnstile** — provision the key pair and set both env vars in Vercel.
+- [ ] **Turnstile** — the Deyo Dash env already holds a fleet Turnstile pair. Either
+      add `foundation-prep-site.vercel.app` + `foundationprep.com` to that widget's
+      allowed hostnames and reuse it, or mint a site-specific pair. Then set
+      `PUBLIC_TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` in Vercel. Until then
+      the form runs on the honeypot alone.
 - [ ] **Analytics** — Vercel Web Analytics is enabled via the adapter. The
       Cloudflare beacon placeholder is at the bottom of `src/layouts/Layout.astro`.
-- [ ] **Register in Deyo Dash** — add the site to the fleet registry for uptime,
-      domain and form monitoring.
+- [x] **Register in Deyo Dash** — done; status is `review`. Flip to `active` at launch.
 - [ ] **Domain flip** — `astro.config.mjs` already sets
       `site: 'https://foundationprep.com'`. Point DNS at Vercel, then confirm the
       redirects in `REDIRECTS.md` resolve against the live origin.
