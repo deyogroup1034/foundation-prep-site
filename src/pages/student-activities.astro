@@ -1,0 +1,9 @@
+---
+import ContentPage from '@/components/ContentPage.astro';
+import { META } from '@/data/site';
+import html from '@/content/student-activities.html?raw';
+
+const meta = META['student-activities'];
+---
+
+<ContentPage title="Student Activities" metaTitle={meta.title} description={meta.description} html={html} />

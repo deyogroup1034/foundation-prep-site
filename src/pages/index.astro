@@ -1,0 +1,198 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '@/layouts/Layout.astro';
+import Hero from '@/components/Hero.astro';
+import Icon, { type IconName } from '@/components/Icon.astro';
+import SectionTitle from '@/components/SectionTitle.astro';
+import YouTubeFacade from '@/components/YouTubeFacade.astro';
+import LeadForm from '@/components/LeadForm';
+import { META, EXTERNAL } from '@/data/site';
+
+import shield from '@/assets/home/aac-shield.png';
+import um1 from '@/assets/home/um-1.jpg';
+import kayla from '@/assets/home/kayla-reading-with-avery.jpeg';
+import um3 from '@/assets/home/um-3.jpg';
+import primaryImg from '@/assets/home/primary.jpeg';
+import elementaryImg from '@/assets/home/elementary.jpeg';
+import secondaryImg from '@/assets/home/secondary.jpg';
+
+const meta = META.home;
+
+// The six icon tiles beside the crest, in live order.
+const TILES: { label: string; href: string; icon: IconName; external?: boolean }[] = [
+  { label: 'Flexible Schedule', href: '/services/flexible-schedule', icon: 'schedule' },
+  { label: 'Character Development', href: '/co-curricular-activities', icon: 'curriculum' },
+  { label: 'Academics', href: '#homefourth', icon: 'book-open' },
+  { label: 'Falcon Athletics', href: '/falcon-athletics', icon: 'trophy' },
+  { label: 'Family Ministry', href: '/family-ministry', icon: 'users' },
+  { label: 'Accreditation', href: '/services/accreditation', icon: 'accreditation' },
+];
+
+const LEVELS = [
+  { title: 'Primary', grades: 'Grades K-2', href: '/academics-primary', img: primaryImg, alt: 'FPA primary students reading outdoors on the lawn' },
+  { title: 'Elementary', grades: 'Grades 3-6', href: '/academics-elementary', img: elementaryImg, alt: 'FPA elementary students building an electrical circuit' },
+  { title: 'Secondary', grades: 'Grades 7-12', href: '/academics-secondary', img: secondaryImg, alt: 'FPA secondary students at a National Honor Society induction' },
+];
+---
+
+<Layout title={meta.title} description={meta.description}>
+  <Hero />
+
+  <!-- Welcome -->
+  <section class="py-16 lg:py-24">
+    <div class="wrap prose-fpa">
+      <h4 class="text-center">Welcome!</h4>
+      <p class="mx-auto mt-8 max-w-[1000px] text-center">
+        Imagine a world where young adults develop integrity and character while growing in their Christian faith as
+        part of their academic experience. Imagine these young people are prepared for higher education and all aspects
+        of university life at world-class institutions, Imagine these same students now prepared to raise their families
+        with the same strong faith and values. This is the legacy of Foundation Preparatory Academy.
+      </p>
+
+      <h6 class="mt-10 text-center uppercase">Kingdom Character with Academic Excellence for Generational Impact</h6>
+
+      <div class="mt-10">
+        <p>
+          Foundation Preparatory Academy makes no distinction in its enrollment or employment decisions, student
+          admissions, and/or operating policies with regard to an individual&rsquo;s gender, race, color, or national and
+          ethnic origin because we recognize that there can be no preferential treatment with God (Romans 2:11).
+        </p>
+        <p>
+          Foundation Preparatory Academy admits students of any gender, race, color, national and ethnic origin to all
+          the rights, privileges, programs, and activities generally accorded or made available to students at the
+          school. It does not discriminate on the basis of race, color, national and ethnic origin in the administration
+          of its educational policies, admissions policies, scholarship and loan programs, and athletic and other
+          school-administered programs.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Crest + the six programme tiles -->
+  <section class="pb-16 lg:pb-24">
+    <div class="wrap">
+      <div class="grid items-start gap-10 md:grid-cols-4">
+        <div class="text-center md:col-span-1">
+          <a href="/vision-mission-crest-statement-of-faith" class="inline-block">
+            <Image src={shield} alt="Foundation Preparatory Academy crest" width={200} class="mx-auto h-auto w-[200px]" />
+          </a>
+          <h5 class="mt-4 text-[#0b2c4c]">DEUT 6:5-7</h5>
+        </div>
+
+        <ul class="grid grid-cols-2 gap-x-6 gap-y-12 md:col-span-3 lg:grid-cols-3">
+          {
+            TILES.map((tile) => (
+              <li class="text-center">
+                <a href={tile.href} class="group inline-flex flex-col items-center gap-4">
+                  <Icon
+                    name={tile.icon}
+                    class="text-[color:var(--color-brand)] transition-transform duration-200 group-hover:scale-110"
+                  />
+                  <span class="font-[family-name:var(--font-head)] text-[15px] font-medium uppercase leading-tight tracking-[0.15px] text-[color:var(--color-heading-mute)] transition-colors group-hover:text-[color:var(--color-brand)]">
+                    {tile.label}
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video -->
+  <section class="pb-16 lg:pb-24">
+    <div class="wrap">
+      <YouTubeFacade id="NYQlXKE909g" title="What Makes FPA Special?" />
+    </div>
+  </section>
+
+  <!-- The University Model -->
+  <section class="bg-[color:var(--color-band)] py-16 lg:py-24">
+    <div class="wrap">
+      <div class="grid items-center gap-10 lg:grid-cols-12">
+        <div class="text-center lg:col-span-5">
+          <h2>The University Model</h2>
+          <p class="mx-auto mt-6 max-w-[420px]">
+            University-Model&reg; Schooling is a blend of the most positive aspects from traditional public and private
+            schools as well as home schools, to give a highly successful college-preparatory education set in a Christian
+            environment. The key is professional classroom instruction partnered with caring parenting at home.
+          </p>
+          <a
+            href="/about-us"
+            class="mt-8 inline-block rounded-full border-2 border-[color:var(--color-gold)] bg-[#0b2c4c] px-9 py-4 font-[family-name:var(--font-head)] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:bg-[#123a63]"
+            >Learn more about UMSI</a
+          >
+        </div>
+
+        <div class="grid grid-cols-12 gap-4 lg:col-span-7">
+          <div class="col-span-7">
+            <Image src={um1} alt="FPA students placing their hands together in a circle" class="h-auto w-full" width={800} widths={[400, 800]} sizes="(min-width: 1024px) 380px, 60vw" />
+          </div>
+          <div class="col-span-5 flex flex-col gap-4 pt-14">
+            <Image src={kayla} alt="A parent reading with her daughter in the at-home satellite classroom" class="h-auto w-full" width={600} widths={[300, 600]} sizes="(min-width: 1024px) 270px, 40vw" />
+            <Image src={um3} alt="A student's home study desk set up for satellite classroom days" class="h-auto w-full" width={600} widths={[300, 600]} sizes="(min-width: 1024px) 270px, 40vw" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- An FPA Education — the nav's Academics item deep-links to #homefourth -->
+  <section id="homefourth" class="py-16 lg:py-24">
+    <div class="wrap">
+      <SectionTitle title="An FPA Education" class="mb-12" />
+      <ul class="grid gap-8 md:grid-cols-3">
+        {
+          LEVELS.map((level) => (
+            <li>
+              <a href={level.href} class="group block">
+                <Image
+                  src={level.img}
+                  alt={level.alt}
+                  class="aspect-[1019/552] h-auto w-full object-cover"
+                  widths={[400, 760, 1019]}
+                  sizes="(min-width: 768px) 360px, 100vw"
+                />
+                <h5 class="mt-6 text-center transition-colors group-hover:text-[color:var(--color-brand)]">
+                  {level.title}
+                </h5>
+                <p class="mt-2 text-center">{level.grades}</p>
+                <span class="mt-4 block text-center font-[family-name:var(--font-head)] text-[13px] font-medium uppercase tracking-[0.5px] text-[#0b2c4c]">
+                  Learn more <span aria-hidden="true">&raquo;</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Parent testimonial + Get in Touch -->
+  <section class="bg-[color:var(--color-band)] py-16 lg:py-24">
+    <div class="wrap">
+      <div class="grid gap-12 lg:grid-cols-3">
+        <div class="lg:col-span-2">
+          <SectionTitle title="Parent Testimonial" class="mb-10" />
+          <blockquote class="bg-white px-8 py-10">
+            <p class="text-center text-[15px] font-semibold italic leading-relaxed text-[color:var(--color-heading-alt)]">
+              &ldquo;FPA is a caring, compassionate, and <b>God-centered</b> establishment that teaches from a place of
+              LOVE. My daughter is taught respect and treated with respect. She loves school and as a mom, I love the
+              open communication I have with her teacher and anyone else in her school life&rdquo; &hellip;
+              <a href="/testimonials" class="text-[color:var(--color-leaf)] hover:underline">Read More</a>
+            </p>
+            <footer class="mt-5 text-right text-[15px] font-semibold italic text-[color:var(--color-heading-alt)]">
+              ~ FPA Parent
+            </footer>
+          </blockquote>
+        </div>
+
+        <div>
+          <SectionTitle title="Get in Touch" class="mb-10" />
+          <LeadForm client:visible compact />
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

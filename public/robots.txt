@@ -1,0 +1,37 @@
+User-agent: *
+Allow: /
+
+# Carried from the WordPress robots.txt: the school opted out of AI training
+# crawlers. The plain Applebot block was dropped (it suppressed Siri and
+# Spotlight results); Applebot-Extended still blocks Apple Intelligence training.
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: GoogleOther
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: TikTokSpider
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+Sitemap: https://foundationprep.com/sitemap.xml

@@ -1,0 +1,15 @@
+---
+// Centered section heading, matching the theme's trx_sc_title:
+// an optional Courgette kicker above a Fira Sans h2.
+interface Props {
+  title: string;
+  kicker?: string;
+  class?: string;
+}
+const { title, kicker, class: cls = '' } = Astro.props;
+---
+
+<div class:list={['text-center', cls]}>
+  {kicker && <span class="mb-2 block font-[family-name:var(--font-script)] text-[20px] text-[color:var(--color-brand)]">{kicker}</span>}
+  <h2>{title}</h2>
+</div>

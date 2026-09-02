@@ -1,0 +1,120 @@
+---
+import '@/styles/global.css';
+import { BIZ, META, telHref } from '@/data/site';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Page-specific JSON-LD, rendered after the global School schema. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title = META.home.title,
+  description = META.home.description,
+  jsonLd,
+} = Astro.props;
+
+// The Vercel adapter serves clean slash-less URLs; normalize the build-time
+// pathname so canonical/og:url match what is actually served.
+const cleanPath = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/');
+const canonical = new URL(cleanPath, Astro.site ?? Astro.url).href;
+const ogImage = new URL('/og-image.jpg', Astro.site ?? Astro.url).href;
+
+// Global School schema — present on every page. The live site carried no
+// structured data at all (docs/INVENTORY.md §5.7); these values come from the
+// footer, the contacts page and the hero.
+const schoolSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'School',
+  name: BIZ.name,
+  alternateName: BIZ.shortName,
+  description,
+  slogan: BIZ.tagline,
+  url: new URL('/', Astro.site ?? Astro.url).href,
+  logo: new URL('/favicon-512.png', Astro.site ?? Astro.url).href,
+  image: ogImage,
+  telephone: telHref(BIZ.phone).replace('tel:', ''),
+  email: BIZ.email,
+  foundingDate: String(BIZ.founded),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: BIZ.address.street,
+    addressLocality: BIZ.address.city,
+    addressRegion: BIZ.address.state,
+    postalCode: BIZ.address.zip,
+    addressCountry: 'US',
+  },
+  sameAs: [BIZ.social.facebook, BIZ.social.instagram],
+};
+
+const pageSchemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+const schemas = [schoolSchema, ...pageSchemas];
+
+// The live site loaded Fira Sans (headings/nav), Montserrat (body), Courgette
+// (script accents) and Balthazar (the inner-header wordmark).
+const FONT_HREF =
+  'https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@300;400;500;600&family=Courgette&family=Balthazar&display=swap';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon-192.png" sizes="192x192" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#169f49" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={BIZ.name} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Fonts, loaded async (media swap) so the Google Fonts CSS doesn't
+         render-block first paint. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href={FONT_HREF} rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;" />
+    <noscript><link href={FONT_HREF} rel="stylesheet" /></noscript>
+
+    {schemas.map((schema) => <script type="application/ld+json" set:html={JSON.stringify(schema)} />)}
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-[color:var(--color-brand)] focus:shadow-lg"
+      >Skip to content</a
+    >
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <!-- ANALYTICS BEACON PLACEHOLDER (fleet standard): drop the Cloudflare
+         Web Analytics beacon (or the Deyo Dash-selected provider) here once
+         the site token is provisioned, e.g.
+         <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+                 data-cf-beacon='{"token": "SITE_TOKEN"}'></script>
+         Vercel Web Analytics is already injected by the adapter. -->
+  </body>
+</html>

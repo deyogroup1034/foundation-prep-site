@@ -1,0 +1,80 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import SectionTitle from '@/components/SectionTitle.astro';
+import LeadForm from '@/components/LeadForm';
+import { BIZ, META, telHref } from '@/data/site';
+
+const meta = META.contacts;
+const q = encodeURIComponent(
+  `${BIZ.address.street.replace('St.', 'Street')}, ${BIZ.address.city}, ${BIZ.address.state} ${BIZ.address.zip}`,
+);
+// Same embed the live page used, minus the tracking-free `output=embed` form.
+const mapSrc = `https://maps.google.com/maps?t=m&output=embed&iwloc=near&z=13&q=${q}`;
+
+const contactSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contacts',
+  url: new URL('/contacts', Astro.site ?? Astro.url).href,
+};
+---
+
+<Layout title={meta.title} description={meta.description} jsonLd={contactSchema}>
+  <!-- The live page opens straight onto the map with no title band, which
+       left it without an h1. Keep the design and give the page a heading. -->
+  <h1 class="sr-only">Contact Foundation Preparatory Academy</h1>
+
+  <!-- Map with the contact card overlaid, as on the live page -->
+  <section class="relative pt-[150px] lg:pt-[170px]">
+    <div class="relative h-[420px] w-full overflow-hidden bg-[#e8eaed] lg:h-[520px]">
+      <iframe
+        src={mapSrc}
+        title={`Map showing ${BIZ.name} at ${BIZ.address.street}, ${BIZ.address.city}, ${BIZ.address.state}`}
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        class="h-full w-full border-0"></iframe>
+
+      <div class="pointer-events-none absolute inset-0">
+        <div class="wrap flex h-full items-center justify-end">
+          <div class="pointer-events-auto w-full max-w-[420px] bg-[#59babe] px-8 py-9 text-white">
+            <h5 class="text-white">{BIZ.name}</h5>
+
+            <ul class="mt-6 divide-y divide-white/30">
+              <li class="flex items-start gap-4 py-4">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" class="mt-[2px] shrink-0">
+                  <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"></path>
+                </svg>
+                <a href={BIZ.mapUrl} target="_blank" rel="noopener noreferrer" class="text-[15px] hover:underline">
+                  {BIZ.address.street.replace('St.', 'Street')}, {BIZ.address.city},<br />{BIZ.address.state}
+                  {BIZ.address.zip}
+                </a>
+              </li>
+              <li class="flex items-center gap-4 py-4">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" class="shrink-0">
+                  <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.3 2.2Z"></path>
+                </svg>
+                <a href={telHref(BIZ.phone)} class="text-[15px] hover:underline">{BIZ.phone}</a>
+              </li>
+              <li class="flex items-center gap-4 py-4">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" class="shrink-0">
+                  <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"></path>
+                </svg>
+                <a href={`mailto:${BIZ.email}`} class="text-[15px] hover:underline">{BIZ.email}</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Get in Touch -->
+  <section class="py-16 lg:py-24">
+    <div class="wrap">
+      <SectionTitle title="Get in Touch" kicker="Send Us a Message" class="mb-12" />
+      <div class="mx-auto max-w-[770px]">
+        <LeadForm client:visible />
+      </div>
+    </div>
+  </section>
+</Layout>

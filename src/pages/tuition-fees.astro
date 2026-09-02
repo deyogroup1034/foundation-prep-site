@@ -1,0 +1,30 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import PageTitle from '@/components/PageTitle.astro';
+import { META } from '@/data/site';
+
+const meta = META['tuition-fees'];
+
+// The live page is a single embedded PDF with a download link beneath it.
+const PDF = '/tuition-fees-summary-26-27.pdf';
+---
+
+<Layout title={meta.title} description={meta.description}>
+  <PageTitle title="Tuition &amp; Fees" />
+  <section class="py-14 lg:py-20">
+    <div class="wrap">
+      <div class="mx-auto max-w-[900px]">
+        <object data={PDF} type="application/pdf" class="h-[70vh] min-h-[520px] w-full border border-[#e2e4e7]">
+          <p class="p-8 text-center">
+            Your browser can&rsquo;t display the PDF inline.
+            <a href={PDF} class="text-[color:var(--color-brand)] underline">Download the tuition &amp; fees summary</a>.
+          </p>
+        </object>
+
+        <p class="mt-8 text-center">
+          <a href={PDF} class="btn-brand" download>Click here to Download File</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

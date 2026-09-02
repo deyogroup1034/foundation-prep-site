@@ -1,0 +1,69 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import PageTitle from '@/components/PageTitle.astro';
+import { META } from '@/data/site';
+
+const meta = META.calendar;
+
+// The slug says 2025-26 but the page carries both academic years — the label
+// "2025-27 Calendars" is the accurate one. The slug is preserved because it is
+// the indexed URL (docs/INVENTORY.md §5.1).
+const CALENDARS = [
+  {
+    year: '2025-2026',
+    anchor: '202526',
+    label: '2025-2026 Academic Calendar',
+    file: '/2025-2026-fpa-academic-calendar.pdf',
+  },
+  {
+    year: '2026-2027',
+    anchor: '2026',
+    label: '2026-2027 Academic Calendar',
+    file: '/2026-2027-academic-calendar.pdf',
+  },
+];
+---
+
+<Layout title={meta.title} description={meta.description}>
+  <PageTitle title="2025-27 Calendars" />
+  <section class="py-14 lg:py-20">
+    <div class="wrap">
+      <div class="mx-auto max-w-[900px] space-y-16">
+        {
+          CALENDARS.map((cal, i) => (
+            <div id={cal.anchor} class="scroll-mt-[150px]">
+              <div class="flex flex-wrap items-baseline justify-between gap-4">
+                <h2>{cal.year} Calendar</h2>
+                {i === 0 && (
+                  <a href="#2026" class="text-[color:var(--color-brand)] hover:underline">
+                    See 2026-2027 Calendar &darr;
+                  </a>
+                )}
+              </div>
+
+              <object
+                data={cal.file}
+                type="application/pdf"
+                class="mt-6 h-[70vh] min-h-[520px] w-full border border-[#e2e4e7]"
+              >
+                <p class="p-8 text-center">
+                  Your browser can&rsquo;t display the PDF inline.{' '}
+                  <a href={cal.file} class="text-[color:var(--color-brand)] underline">
+                    Download the {cal.year} academic calendar
+                  </a>
+                  .
+                </p>
+              </object>
+
+              <p class="mt-6">
+                <a href={cal.file} class="btn-brand" download>
+                  {cal.label}
+                </a>
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>

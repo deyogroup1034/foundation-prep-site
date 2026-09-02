@@ -1,0 +1,1347 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap-index.xml",
+      "permanent": true
+    },
+    {
+      "source": "/calendar",
+      "destination": "/2025-26-calendar",
+      "permanent": true
+    },
+    {
+      "source": "/2023-24-calendar",
+      "destination": "/2025-26-calendar",
+      "permanent": true
+    },
+    {
+      "source": "/2024-25-calendar",
+      "destination": "/2025-26-calendar",
+      "permanent": true
+    },
+    {
+      "source": "/https-foundationprep-com-2024-25-calendar",
+      "destination": "/2025-26-calendar",
+      "permanent": true
+    },
+    {
+      "source": "/calendar/fpa-calendar_2021-2022-revised",
+      "destination": "/FPA-Calendar_2021-2022-Revised.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/2025-26-calendar/fpa-calendar_2022-2023",
+      "destination": "/FPA-Calendar_2022-2023.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/2023-2024-academic-calendar",
+      "destination": "/2023-2024-Academic-Calendar.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/fpa-24-25-academic-calendar",
+      "destination": "/fpa-24-25-academic-calendar.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/2025-2026-fpa-academic-calendar",
+      "destination": "/2025-2026-fpa-academic-calendar.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/2023-2024-academic-calendar-2",
+      "destination": "/2023-2024-Academic-Calendar-1.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/https-foundationprep-com-2024-25-calendar/24-25-academic-calendar",
+      "destination": "/24-25-academic-calendar.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/tuition-fees-summary-26-27",
+      "destination": "/tuition-fees-summary-26-27.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/2026-2027-academic-calendar",
+      "destination": "/2026-2027-academic-calendar.pdf",
+      "permanent": true
+    },
+    {
+      "source": "/services/academics",
+      "destination": "/#homefourth",
+      "permanent": true
+    },
+    {
+      "source": "/services/primary",
+      "destination": "/academics-primary",
+      "permanent": true
+    },
+    {
+      "source": "/services/elementary",
+      "destination": "/academics-elementary",
+      "permanent": true
+    },
+    {
+      "source": "/services/secondary",
+      "destination": "/academics-secondary",
+      "permanent": true
+    },
+    {
+      "source": "/services/family-ministry",
+      "destination": "/family-ministry",
+      "permanent": true
+    },
+    {
+      "source": "/services/character-development",
+      "destination": "/co-curricular-activities",
+      "permanent": true
+    },
+    {
+      "source": "/services/falcon-athletics",
+      "destination": "/falcon-athletics",
+      "permanent": true
+    },
+    {
+      "source": "/team/:slug*",
+      "destination": "/leadership",
+      "permanent": true
+    },
+    {
+      "source": "/testimonials_group/:slug*",
+      "destination": "/testimonials",
+      "permanent": true
+    },
+    {
+      "source": "/testimonials/:slug",
+      "destination": "/testimonials",
+      "permanent": true
+    },
+    {
+      "source": "/services/summer-camp",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/after-school",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/sixth-form",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/junior-high",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/upper-elementary",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/horse-club",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/tennis",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/dance-club",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/library-club",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/dramatic-arts",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/art-classes",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/football",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/music-class",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services_group/:slug*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/layouts/:slug*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/category/:slug*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/tag/:slug*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/author/:slug*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/feed",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/comments/feed",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/:slug/feed",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/wp-json/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/wp-login.php",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/xmlrpc.php",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/wp-admin/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-1",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-1/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-2/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-3",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-3/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-boxed",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-boxed/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-alternative",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-alternative/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-new-alternative",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-new-alternative/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/about-1",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/about-1/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/about-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/about-2/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/about-alter",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/about-alter/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/admission",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/admission/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/prospectus",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/prospectus/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/community",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/community/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/programs",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/programs/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/programs-alternative",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/programs-alternative/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/service-plus",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/service-plus/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/privacy-policy-1",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/privacy-policy-1/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/shortcodes",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/shortcodes/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/typography",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/typography/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/grid",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/grid/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/masonry",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/masonry/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/cobbles",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/cobbles/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/classic-1",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/classic-1/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/classic-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/classic-2/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/classic-3",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/classic-3/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/chess-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/chess-2/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/chess-4",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/chess-4/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/chess-6",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/chess-6/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/portfolio-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/portfolio-2/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/portfolio-3",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/portfolio-3/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/portfolio-4",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/portfolio-4/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/sitemap",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/sitemap/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/the-right-high-school-myth-versus-reality",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/the-right-high-school-myth-versus-reality/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/a-beginners-complete-guide-to-art-class",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/a-beginners-complete-guide-to-art-class/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/how-to-find-a-college-that-fits-you",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/how-to-find-a-college-that-fits-you/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/choosing-a-computer-or-electronic-device-for-your-child",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/choosing-a-computer-or-electronic-device-for-your-child/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/winter-concert-photos-and-videos",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/winter-concert-photos-and-videos/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/top-admissions-questions",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/top-admissions-questions/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/school-choice-checklist",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/school-choice-checklist/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/international-school-trips-worth-the-hassle",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/international-school-trips-worth-the-hassle/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/10-minutes-with-college-counselor",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/10-minutes-with-college-counselor/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/empowering-student-accountability",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/empowering-student-accountability/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/150",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/150/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/art-class-video",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/art-class-video/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/getting-to-the-bottom-of-global-readiness",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/getting-to-the-bottom-of-global-readiness/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/making-every-student-ready-for-the-world",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/making-every-student-ready-for-the-world/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/summer-2017-spotlight-traditional-day-camp",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/summer-2017-spotlight-traditional-day-camp/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/optimum-nutrition-for-the-school-day",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/optimum-nutrition-for-the-school-day/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/2-layers",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/2-layers-jpg",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/2-layers1-png",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/2-layers1-png-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/2-layers1-png-3",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/20190927_132644",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/20191005_082812",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/20201028_1420471",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/21-png",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/21-png-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/21-png-3",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/2nd-4-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/3",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/31-png",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/31-png-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/31-png-3",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=1334",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=1335",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=1336",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=1612",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=1660",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=298",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=299",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=300",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=319",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=429",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=435",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=436",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=663",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=664",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=864",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=865",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=866",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=908",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=911",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=921",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=922",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=923",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/?attachment_id=955",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/academics-elementary/circuits-5n",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/academics-elementary/elementary-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/academics-elementary/image-35",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/academics-elementary/secondary-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/academics-primary/image2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/academics-primary/image2-1",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/academics-primary/primary-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/cropped-favicon-jpg",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/cropped-fpa_circle__falcon_logos_vector_format-1-e1615184366694-jpg",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/falcon-athletics/fpa-basketball1",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/falcon-athletics/fpa-basketball2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/falcon-athletics/fpa-basketball3",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/falcon-athletics/fpa-basketball4",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/falcon-athletics/fpa-tennis1",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/falcon-athletics/fpa-tennis3",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/falcon-athletics/fpa-volleyball1",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/falcon-athletics/fpa-volleyball2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/family-ministry/screenshot-fpa-wordkeeper-net-2021-11-16-16_59_41",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/favicon",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/fpa-graduation-008-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/fpa_basketball",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/fpa_circle__falcon_logos_vector_format",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/fpa_circle__falcon_logos_vector_format-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/high-school-guidance-resources/screenshot-newtab-2021-11-16-19_00_47",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-1-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-2-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-3-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/home-4",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-11-jpg",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-13",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-2-11-jpg",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-23",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-24",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-25",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-26",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-27",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-3-11-jpg",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-37",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-38",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-39",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-40",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-41",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/image-42",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/img_1193-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/img_5737-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/img_5737-3",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/img_7084-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/img_7732-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/logo",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/logo-3",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/photo-2-2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/pic2-jpg",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/pic3-jpg",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/play",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/play-png",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/play1-png",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/after-school/image-31",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/art-classes/image-47",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/dance-club/image-44",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/dramatic-arts/image-46",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/football/image-48",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/junior-high/image-33",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/library-club/image-45",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/music-class/image-49",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/sixth-form/image-32",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/summer-camp/image-30",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/tennis/image-43",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/services/upper-elementary/image-34",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/team/christopher-collins/image-52",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/team/nancy-cartwright/image-53",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/team/pamela-hayden/image-51",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/testimonials/cynthia-jefferson/image-59",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/testimonials/dzfghfxghnjxgf/image-58",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/testimonials/lisa-dowen/image-60",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/vision-mission-crest-statement-of-faith/screenshot-newtab-2021-11-16-16_49_26",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/what-is-umsi-naums/2a-time-comparison-graphic",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/sample-melody",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/admission/application-form",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "geolocation=(), microphone=(), camera=(), interest-cohort=()"
+        }
+      ]
+    },
+    {
+      "source": "/wp-content/uploads/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}

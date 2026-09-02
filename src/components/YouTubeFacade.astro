@@ -1,0 +1,67 @@
+---
+// Lazy-loaded YouTube facade: renders the poster image and only swaps in the
+// iframe on click, so the page never ships the YouTube player by default.
+// The live site embedded the raw iframe on every home-page load.
+interface Props {
+  id: string;
+  title: string;
+  /** Player params, matching the live embed. */
+  params?: string;
+}
+const { id, title, params = 'rel=0&modestbranding=1&autoplay=1' } = Astro.props;
+const poster = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
+const posterFallback = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+---
+
+<div
+  class="group relative mx-auto aspect-video w-full max-w-[860px] cursor-pointer overflow-hidden rounded bg-black"
+  data-yt-facade
+  data-yt-id={id}
+  data-yt-params={params}
+>
+  <img
+    src={poster}
+    alt=""
+    aria-hidden="true"
+    loading="lazy"
+    width="1280"
+    height="720"
+    class="h-full w-full object-cover transition-opacity group-hover:opacity-90"
+    data-fallback={posterFallback}
+    onerror="if(this.dataset.fallback&&this.src!==this.dataset.fallback){this.src=this.dataset.fallback;}"
+  />
+  <button
+    type="button"
+    class="absolute inset-0 flex items-center justify-center"
+    aria-label={`Play video: ${title}`}
+  >
+    <span
+      class="flex h-[68px] w-[100px] items-center justify-center rounded-[14px] bg-black/70 transition-colors group-hover:bg-[#f00]"
+    >
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+    </span>
+  </button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-yt-facade]').forEach((el) => {
+    el.addEventListener(
+      'click',
+      () => {
+        const id = el.dataset.ytId;
+        const params = el.dataset.ytParams ?? '';
+        const frame = document.createElement('iframe');
+        frame.src = `https://www.youtube-nocookie.com/embed/${id}?${params}`;
+        frame.title = 'YouTube video player';
+        frame.allow =
+          'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        frame.allowFullscreen = true;
+        frame.className = 'absolute inset-0 h-full w-full';
+        frame.setAttribute('frameborder', '0');
+        el.replaceChildren(frame);
+        el.classList.remove('cursor-pointer');
+      },
+      { once: true },
+    );
+  });
+</script>

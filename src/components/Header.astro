@@ -1,0 +1,162 @@
+---
+import { Image } from 'astro:assets';
+import logo from '@/assets/logo.png';
+import { BIZ, NAV, CURRENT_STUDENTS, EXTERNAL, telHref, type NavItem } from '@/data/site';
+import MobileNav from '@/components/MobileNav';
+
+// The live site ran two different headers — a transparent one over the home
+// hero and a solid green one on inner pages, each with its own (drifted) menu.
+// This is the unified header: the home menu everywhere, plus the inner
+// header's phone number and Donate button. See docs/INVENTORY.md §5.4.
+// `transparent` reproduces the home page's overlay treatment.
+interface Props {
+  transparent?: boolean;
+}
+const { transparent = Astro.url.pathname === '/' } = Astro.props;
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => href !== '#' && !href.startsWith('http') && path === href.split('#')[0];
+
+// Depth drives the submenu's flyout direction: level 0 opens downward, deeper
+// levels open to the right, matching the live multi-level dropdown.
+const renderDepth = (items: NavItem[]) => items;
+---
+
+<header
+  class:list={[
+    'absolute inset-x-0 top-0 z-50 w-full',
+    transparent ? 'bg-transparent' : 'bg-[color:var(--color-brand)]',
+  ]}
+  data-header
+>
+  <div class="wrap">
+    <!-- Utility row: wordmark, phone, donate, current students -->
+    <div class="flex items-center justify-between gap-4 pt-3">
+      <a href="/" class="flex items-center gap-3 shrink-0">
+        <Image
+          src={logo}
+          alt={`${BIZ.name} falcon crest`}
+          width={100}
+          height={100}
+          class="h-[70px] w-[70px] object-contain lg:h-[100px] lg:w-[100px]"
+          loading="eager"
+        />
+        <span
+          class="hidden font-[family-name:var(--font-head)] text-[22px] font-medium leading-tight text-white xl:block xl:text-[30px]"
+          >{BIZ.name}</span
+        >
+      </a>
+
+      <div class="flex items-center gap-3 lg:gap-5">
+        <a
+          href={telHref(BIZ.phone)}
+          class="hidden font-[family-name:var(--font-head)] text-[15px] font-medium text-white hover:underline lg:inline"
+          >{BIZ.phone}</a
+        >
+        <a
+          href={EXTERNAL.donate}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="pill-brand hidden border border-white/30 md:inline-block">Donate Now</a
+        >
+
+        <!-- Current Students dropdown (WordPress `current-student` menu) -->
+        <div class="relative hidden md:block group">
+          <button type="button" class="pill-brand cursor-pointer" aria-haspopup="true" aria-expanded="false"
+            >Current Students</button
+          >
+          <ul
+            class="invisible absolute right-0 top-full z-50 w-[190px] translate-y-1 rounded bg-white py-2 text-center opacity-0 shadow-[1px_1px_2px_rgba(0,0,0,0.2)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100"
+          >
+            {
+              CURRENT_STUDENTS.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    target={item.external ? '_blank' : undefined}
+                    rel={item.external ? 'noopener noreferrer' : undefined}
+                    class="block px-3 py-2 font-[family-name:var(--font-head)] text-[13px] font-medium uppercase text-[color:var(--color-body)] transition-colors hover:bg-[color:var(--color-brand)] hover:text-white"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <MobileNav client:load nav={NAV} currentStudents={CURRENT_STUDENTS} phone={BIZ.phone} donate={EXTERNAL.donate} />
+      </div>
+    </div>
+
+    <!-- Main nav row -->
+    <nav aria-label="Main" class="hidden justify-end pb-2 pt-1 xl:flex">
+      <ul class="flex items-center">
+        {
+          renderDepth(NAV).map((item) => (
+            <li class="group relative">
+              <a
+                href={item.href}
+                target={item.external ? '_blank' : undefined}
+                rel={item.external ? 'noopener noreferrer' : undefined}
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+                class:list={[
+                  'block whitespace-nowrap px-[38px] py-[5px] font-[family-name:var(--font-head)] text-[15px] font-medium uppercase leading-[22px] text-white transition-opacity hover:opacity-75 2xl:px-[51px]',
+                  isCurrent(item.href) && 'underline underline-offset-8',
+                ]}
+              >
+                {item.label}
+              </a>
+              {item.children && (
+                <ul class="invisible absolute left-0 top-full z-50 w-[236px] translate-y-1 bg-[color:var(--color-band-alt)] py-[21px] opacity-0 shadow-[1px_1px_2px_rgba(0,0,0,0.2)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                  {item.children.map((child) => (
+                    <li class="group/l2 relative">
+                      <a
+                        href={child.href}
+                        target={child.external ? '_blank' : undefined}
+                        rel={child.external ? 'noopener noreferrer' : undefined}
+                        class="flex items-center justify-between gap-2 px-6 py-[5px] font-[family-name:var(--font-head)] text-[15px] font-medium uppercase leading-[22px] text-[color:var(--color-body)] transition-colors hover:text-[color:var(--color-brand)]"
+                      >
+                        <span>{child.label}</span>
+                        {child.children && <span aria-hidden="true">&rsaquo;</span>}
+                      </a>
+                      {child.children && (
+                        <ul class="invisible absolute left-full top-0 z-50 w-[216px] bg-[color:var(--color-band-alt)] py-[21px] opacity-0 shadow-[1px_1px_2px_rgba(0,0,0,0.2)] transition-opacity duration-200 group-hover/l2:visible group-hover/l2:opacity-100 group-focus-within/l2:visible group-focus-within/l2:opacity-100">
+                          {child.children.map((gc) => (
+                            <li class="group/l3 relative">
+                              <a
+                                href={gc.href}
+                                class="flex items-center justify-between gap-2 px-6 py-[5px] font-[family-name:var(--font-head)] text-[15px] font-medium uppercase leading-[22px] text-[color:var(--color-body)] transition-colors hover:text-[color:var(--color-brand)]"
+                              >
+                                <span>{gc.label}</span>
+                                {gc.children && <span aria-hidden="true">&rsaquo;</span>}
+                              </a>
+                              {gc.children && (
+                                <ul class="invisible absolute left-full top-0 z-50 w-[200px] bg-[color:var(--color-band-alt)] py-[21px] opacity-0 shadow-[1px_1px_2px_rgba(0,0,0,0.2)] transition-opacity duration-200 group-hover/l3:visible group-hover/l3:opacity-100 group-focus-within/l3:visible group-focus-within/l3:opacity-100">
+                                  {gc.children.map((ggc) => (
+                                    <li>
+                                      <a
+                                        href={ggc.href}
+                                        class="block px-6 py-[5px] font-[family-name:var(--font-head)] text-[15px] font-medium uppercase leading-[22px] text-[color:var(--color-body)] transition-colors hover:text-[color:var(--color-brand)]"
+                                      >
+                                        {ggc.label}
+                                      </a>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

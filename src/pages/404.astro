@@ -1,0 +1,27 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import PageTitle from '@/components/PageTitle.astro';
+import { META } from '@/data/site';
+
+const meta = META['404'];
+---
+
+<Layout title={meta.title} description={meta.description}>
+  <PageTitle title="Page Not Found" />
+  <section class="py-16 lg:py-24">
+    <div class="wrap prose-fpa mx-auto max-w-[700px] text-center">
+      <p>
+        Sorry &mdash; we couldn&rsquo;t find that page. It may have moved when the site was rebuilt, or the link that
+        brought you here may be out of date.
+      </p>
+      <p class="mt-8">
+        <a href="/" class="btn-brand">Back to the home page</a>
+      </p>
+      <p class="mt-10 text-[13px]">
+        Looking for something specific? Try <a href="/about-us">About Us</a>, <a href="/application-process"
+          >Application Process</a
+        >, <a href="/2025-26-calendar">Calendars</a> or <a href="/contacts">Contact Us</a>.
+      </p>
+    </div>
+  </section>
+</Layout>

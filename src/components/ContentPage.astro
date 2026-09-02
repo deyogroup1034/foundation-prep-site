@@ -1,0 +1,28 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import PageTitle from '@/components/PageTitle.astro';
+
+// Shared shell for the ported WordPress content pages: the inner-page title
+// band followed by the page's own markup, rendered inside the prose styles.
+interface Props {
+  title: string;
+  metaTitle: string;
+  description: string;
+  /** Optional kicker above the page title. */
+  kicker?: string;
+  /** The converted content fragment (imported with ?raw). */
+  html: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+const { title, metaTitle, description, kicker, html, jsonLd } = Astro.props;
+---
+
+<Layout title={metaTitle} description={description} jsonLd={jsonLd}>
+  <PageTitle title={title} kicker={kicker} />
+  <section class="py-14 lg:py-20">
+    <div class="wrap">
+      <div class="prose-fpa mx-auto max-w-[900px]" set:html={html} />
+      <slot />
+    </div>
+  </section>
+</Layout>

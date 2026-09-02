@@ -1,0 +1,302 @@
+@import 'tailwindcss';
+
+/* ============================================================
+   THEME TOKENS — faithful port of the live WordPress site
+   (Greenville / greenville-child theme, foundationprep.com,
+   captured 2026-09). Values are computed styles read off the
+   live pages, not approximations:
+
+     body      Montserrat 300 14px/22.4px ls .056px #5D646B
+     h1        Fira Sans 600 65px/72px
+     h2        Fira Sans 600 48px/48px ls -.7px #3A3A3A
+     h4        Fira Sans 500 30px/40px #4A545E
+     h5        Fira Sans 400 26px/30px ls -1.3px #4A545E
+     h6        Fira Sans 500 17px/24px ls .15px #747C84
+     nav       Fira Sans 500 15px uppercase
+     container 1170px
+   ============================================================ */
+@theme {
+  /* ---- Brand ---- */
+  --color-brand: #169f49; /* FPA green: header, pills, buttons */
+  --color-brand-dark: #12813b; /* hover */
+  --color-gold: #ebc306; /* hero CTA + footer widget titles */
+  --color-gold-dark: #d5b126; /* hero CTA hover (live value) */
+  --color-leaf: #6aa84f; /* inline "Read More" link accent */
+
+  /* ---- Text ---- */
+  --color-body: #5d646b; /* body copy */
+  --color-heading: #3a3a3a; /* h2 */
+  --color-heading-alt: #4a545e; /* h4 / h5 */
+  --color-heading-mute: #747c84; /* h6 */
+  --color-footer-text: #a6a6a6;
+  --color-footer-link: #a7a7a7;
+
+  /* ---- Surfaces ---- */
+  --color-band: #efefef; /* alternating section band */
+  --color-band-alt: #f2f3f6; /* dropdown + light band */
+  --color-footer-bg: #1f2024;
+  --color-rule: #404144; /* footer hairline */
+
+  /* ---- Fonts ---- */
+  --font-body: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-head: 'Fira Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-wordmark: 'Balthazar', Georgia, 'Times New Roman', serif;
+  --font-script: 'Courgette', cursive;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: clip;
+    /* The fixed header would otherwise cover an element scrolled to by its
+       #anchor — the nav links to #kindergarten, #grade1, #english, etc. */
+    scroll-padding-top: 150px;
+  }
+
+  body {
+    margin: 0;
+    /* The multi-level nav flyouts are absolutely positioned; `clip` stops a
+       hidden one near the right edge from creating a phantom horizontal
+       scrollbar, without making body a scroll container the way
+       `overflow-x: hidden` would. */
+    overflow-x: clip;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 22.4px;
+    letter-spacing: 0.056px;
+    color: var(--color-body);
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-head);
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 65px;
+    line-height: 72px;
+    font-weight: 600;
+  }
+  h2 {
+    font-size: 48px;
+    line-height: 48px;
+    font-weight: 600;
+    letter-spacing: -0.7px;
+    color: var(--color-heading);
+  }
+  h3 {
+    font-size: 36px;
+    line-height: 44px;
+    font-weight: 500;
+    color: var(--color-heading-alt);
+  }
+  h4 {
+    font-size: 30px;
+    line-height: 40px;
+    font-weight: 500;
+    color: var(--color-heading-alt);
+  }
+  h5 {
+    font-size: 26px;
+    line-height: 30px;
+    font-weight: 400;
+    letter-spacing: -1.3px;
+    color: var(--color-heading-alt);
+  }
+  h6 {
+    font-size: 17px;
+    line-height: 24px;
+    font-weight: 500;
+    letter-spacing: 0.15px;
+    color: var(--color-heading-mute);
+  }
+
+  @media (max-width: 900px) {
+    h1 {
+      font-size: 40px;
+      line-height: 46px;
+    }
+    h2 {
+      font-size: 32px;
+      line-height: 36px;
+    }
+    h3 {
+      font-size: 27px;
+      line-height: 34px;
+    }
+    h4 {
+      font-size: 24px;
+      line-height: 32px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+/* ============================================================
+   COMPONENT UTILITIES (theme-equivalent classes)
+   ============================================================ */
+@layer components {
+  /* Theme container is 1170px wide with no padding of its own; the 20px
+     gutter here keeps text off the edge on small screens. */
+  .wrap {
+    width: 100%;
+    max-width: 1170px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* Body prose inside a ported WordPress page. The live theme spaces
+     paragraphs by ~1.6em and renders lists with a green marker. */
+  .prose-fpa p {
+    margin: 0 0 1.6em;
+  }
+  .prose-fpa p:last-child {
+    margin-bottom: 0;
+  }
+  .prose-fpa strong,
+  .prose-fpa b {
+    font-weight: 600;
+    color: #4a545e;
+  }
+  .prose-fpa ul,
+  .prose-fpa ol {
+    margin: 0 0 1.6em;
+    padding-left: 1.4em;
+  }
+  .prose-fpa ul {
+    list-style: disc;
+  }
+  .prose-fpa ol {
+    list-style: decimal;
+  }
+  .prose-fpa li {
+    margin-bottom: 0.5em;
+  }
+  .prose-fpa li::marker {
+    color: var(--color-brand);
+  }
+  .prose-fpa a {
+    color: var(--color-brand);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .prose-fpa a:hover {
+    color: var(--color-brand-dark);
+    text-decoration: underline;
+  }
+  .prose-fpa h2,
+  .prose-fpa h3,
+  .prose-fpa h4,
+  .prose-fpa h5 {
+    margin: 1.6em 0 0.6em;
+  }
+  .prose-fpa h2:first-child,
+  .prose-fpa h3:first-child,
+  .prose-fpa h4:first-child {
+    margin-top: 0;
+  }
+  .prose-fpa table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 1.6em;
+  }
+  .prose-fpa th,
+  .prose-fpa td {
+    border: 1px solid #e2e4e7;
+    padding: 10px 14px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .prose-fpa th {
+    background: var(--color-band-alt);
+    font-weight: 600;
+    color: #4a545e;
+  }
+
+  /* Green solid button — the theme's .sc_button / vc_btn3-color-green */
+  .btn-brand {
+    display: inline-block;
+    background: var(--color-brand);
+    color: #fff;
+    font-family: var(--font-head);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 12px 26px;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s linear;
+  }
+  .btn-brand:hover {
+    background: var(--color-brand-dark);
+    color: #fff;
+  }
+
+  /* Hero CTA — exact live values: #EBC306, 15px/22 w500 uppercase,
+     19px/35px padding, 30px radius, hover #D5B126. */
+  .btn-hero {
+    display: inline-block;
+    background: var(--color-gold);
+    color: #fff;
+    font-family: var(--font-head);
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 19px 35px;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: background 0.2s linear;
+  }
+  .btn-hero:hover {
+    background: var(--color-gold-dark);
+    color: #fff;
+  }
+
+  /* Header "Current Students" pill — live: #169F49, 11px 18px, r5, 12px caps */
+  .pill-brand {
+    display: inline-block;
+    background: var(--color-brand);
+    color: #fff;
+    font-family: var(--font-head);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 11px 18px;
+    border-radius: 5px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  /* Centered section heading, as rendered by trx_sc_title */
+  .sc-title {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .sc-title .sub {
+    font-family: var(--font-script);
+    font-size: 20px;
+    color: var(--color-brand);
+    display: block;
+    margin-bottom: 8px;
+  }
+}

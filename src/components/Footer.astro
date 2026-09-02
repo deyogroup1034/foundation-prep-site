@@ -1,0 +1,104 @@
+---
+import { Image } from 'astro:assets';
+import logo from '@/assets/logo.png';
+import { BIZ, FOOTER_NAV, telHref } from '@/data/site';
+
+// Dynamic copyright — the live footer hard-coded "© 2026".
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-[color:var(--color-footer-bg)] text-[color:var(--color-footer-text)]">
+  <div class="wrap py-12">
+    <div class="grid gap-10 md:grid-cols-3">
+      <!-- Column 1: crest, tagline, contact -->
+      <div>
+        <Image src={logo} alt={`${BIZ.name} falcon crest`} width={100} height={100} class="h-[100px] w-[100px] object-contain" />
+        <p class="mt-4 font-[family-name:var(--font-head)] text-[15px] leading-relaxed text-white">
+          Kingdom Character<br />Academic Excellence<br />Generational Impact
+        </p>
+        <ul class="mt-5 space-y-2 text-[15px]">
+          <li>
+            <a href={`mailto:${BIZ.email}`} class="transition-colors hover:text-white">{BIZ.email}</a>
+          </li>
+          <li>
+            <a href={telHref(BIZ.phone)} class="transition-colors hover:text-white">{BIZ.phone}</a>
+          </li>
+          <li>
+            <a
+              href={BIZ.mapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="transition-colors hover:text-white"
+            >
+              {BIZ.address.street}, {BIZ.address.city},<br />{BIZ.address.state} {BIZ.address.zip}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 2: Main Information menu -->
+      <div>
+        <h2 class="mb-6 font-[family-name:var(--font-head)] text-[26px] font-normal text-[color:var(--color-gold)]">
+          Main Information
+        </h2>
+        <ul class="grid grid-cols-2 gap-x-6 gap-y-2 text-[15px] font-medium">
+          {
+            FOOTER_NAV.map(([label, href]) => (
+              <li>
+                <a href={href} class="text-[color:var(--color-footer-link)] transition-colors hover:text-white">
+                  {label}
+                </a>
+              </li>
+            ))
+          }
+          <li>
+            <a href="/privacy-policy" class="text-[color:var(--color-footer-link)] transition-colors hover:text-white"
+              >Privacy Policy</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Socials -->
+      <div>
+        <h2 class="mb-6 font-[family-name:var(--font-head)] text-[26px] font-normal text-[color:var(--color-gold)]">
+          Socials
+        </h2>
+        <div class="flex gap-3">
+          <a
+            href={BIZ.social.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${BIZ.name} on Facebook`}
+            class="group flex h-10 w-10 items-center justify-center rounded-full bg-white transition-colors hover:bg-[color:var(--color-brand)]"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" class="text-[#1f2024] transition-colors group-hover:text-white">
+              <path
+                d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.52 1.5-3.91 3.77-3.91 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.89h2.78l-.45 2.9h-2.33V22c4.78-.79 8.44-4.93 8.44-9.94Z"
+              ></path>
+            </svg>
+          </a>
+          <a
+            href={BIZ.social.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${BIZ.name} on Instagram`}
+            class="group flex h-10 w-10 items-center justify-center rounded-full bg-white transition-colors hover:bg-[color:var(--color-brand)]"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" class="text-[#1f2024] transition-colors group-hover:text-white">
+              <path
+                d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16Zm0 5.68a4.16 4.16 0 1 0 0 8.32 4.16 4.16 0 0 0 0-8.32Zm0 6.86a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4Zm5.3-7.02a.97.97 0 1 1-1.94 0 .97.97 0 0 1 1.94 0Z"
+              ></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t border-[color:var(--color-rule)]">
+    <div class="wrap py-5 text-[13px]">
+      <a href="/" class="transition-colors hover:text-white">{BIZ.name}</a> &copy; {year}. All Rights Reserved.
+    </div>
+  </div>
+</footer>
