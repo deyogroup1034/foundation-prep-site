@@ -230,6 +230,14 @@ These were live redirects on the old site, not export URLs, and are preserved:
 |---|---|
 | `/sitemap.xml` | `/sitemap-index.xml` (emitted by `@astrojs/sitemap`) |
 
+## Attachment URLs that need no rule
+
+23 image attachments were only ever reachable as `/?attachment_id=N` — WordPress
+never gave them a pretty permalink. Their **path is `/`**, so they already serve the
+home page, and the canonical tag on `/` collapses them for search engines. Vercel's
+redirect `source` is path-only and rejects a query string, so these carry no rule by
+design rather than by omission.
+
 ## Infrastructure paths
 
 `/wp-json/*`, `/wp-admin/*`, `/wp-login.php`, `/xmlrpc.php`, `/feed`, `/comments/feed` and
