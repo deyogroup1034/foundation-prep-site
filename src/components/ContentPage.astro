@@ -21,7 +21,7 @@ const { title, metaTitle, description, kicker, html, jsonLd } = Astro.props;
   <PageTitle title={title} kicker={kicker} />
   <section class="py-14 lg:py-20">
     <div class="wrap">
-      <div class="prose-fpa mx-auto max-w-[900px]" set:html={html} />
+      <div class="prose-fpa" set:html={html} />
       <slot />
     </div>
   </section>

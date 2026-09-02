@@ -22,16 +22,11 @@ const isCurrent = (href: string) => href !== '#' && !href.startsWith('http') && 
 const renderDepth = (items: NavItem[]) => items;
 ---
 
-<header
-  class:list={[
-    'absolute inset-x-0 top-0 z-50 w-full',
-    transparent ? 'bg-transparent' : 'bg-[color:var(--color-brand)]',
-  ]}
-  data-header
->
-  <div class="wrap">
-    <!-- Utility row: wordmark, phone, donate, current students -->
-    <div class="flex items-center justify-between gap-4 pt-3">
+<header class="absolute inset-x-0 top-0 z-50 w-full" data-header>
+  <!-- Utility row: #1F2024 on inner pages, transparent over the home hero -->
+  <div class:list={[transparent ? 'bg-transparent' : 'bg-[#1f2024]']}>
+    <div class="wrap">
+    <div class="flex items-center justify-between gap-4 pt-3 lg:pt-0">
       <a href="/" class="flex items-center gap-3 shrink-0">
         <Image
           src={logo}
@@ -42,8 +37,12 @@ const renderDepth = (items: NavItem[]) => items;
           loading="eager"
         />
         <span
-          class="hidden font-[family-name:var(--font-head)] text-[22px] font-medium leading-tight text-white xl:block xl:text-[30px]"
-          >{BIZ.name}</span
+          class:list={[
+            'hidden leading-tight text-white lg:block',
+            transparent
+              ? 'font-[family-name:var(--font-head)] text-[22px] font-medium xl:text-[30px]'
+              : 'font-[family-name:var(--font-wordmark)] text-[20px] xl:text-[25px]',
+          ]}>{BIZ.name}</span
         >
       </a>
 
@@ -57,7 +56,8 @@ const renderDepth = (items: NavItem[]) => items;
           href={EXTERNAL.donate}
           target="_blank"
           rel="noopener noreferrer"
-          class="pill-brand hidden border border-white/30 md:inline-block">Donate Now</a
+          class="hidden rounded-[5px] bg-[#619935] px-[18px] py-[9px] font-[family-name:var(--font-head)] text-[13px] font-medium text-white transition-colors hover:bg-[#527f2c] md:inline-block"
+          >Donate Now</a
         >
 
         <!-- Current Students dropdown (WordPress `current-student` menu) -->
@@ -88,9 +88,13 @@ const renderDepth = (items: NavItem[]) => items;
         <MobileNav client:load nav={NAV} currentStudents={CURRENT_STUDENTS} phone={BIZ.phone} donate={EXTERNAL.donate} />
       </div>
     </div>
+    </div>
+  </div>
 
-    <!-- Main nav row -->
-    <nav aria-label="Main" class="hidden justify-end pb-2 pt-1 xl:flex">
+  <!-- Main nav row: #169F49 on inner pages, transparent over the home hero -->
+  <div class:list={[transparent ? 'bg-transparent' : 'bg-[color:var(--color-brand)]']}>
+    <div class="wrap">
+    <nav aria-label="Main" class="hidden justify-end py-[6px] xl:flex">
       <ul class="flex items-center">
         {
           renderDepth(NAV).map((item) => (
@@ -158,5 +162,6 @@ const renderDepth = (items: NavItem[]) => items;
         }
       </ul>
     </nav>
+    </div>
   </div>
 </header>

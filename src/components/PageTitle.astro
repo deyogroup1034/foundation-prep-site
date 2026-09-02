@@ -12,7 +12,7 @@ interface Props {
 const { title, kicker } = Astro.props;
 ---
 
-<section class="relative flex min-h-[300px] items-end justify-center overflow-hidden pb-12 pt-[190px] lg:min-h-[380px] lg:pt-[210px]">
+<section class="relative flex min-h-[300px] items-center justify-center overflow-hidden pb-14 pt-[190px] lg:min-h-[407px] lg:pt-[200px]">
   <Image
     src={bg}
     alt=""
@@ -22,7 +22,7 @@ const { title, kicker } = Astro.props;
     widths={[768, 1170, 1920]}
     sizes="100vw"
   />
-  <div class="absolute inset-0 -z-10 bg-black/55"></div>
+  <div class="absolute inset-0 -z-10 bg-black/10"></div>
   <div class="wrap text-center">
     {kicker && <span class="mb-2 block font-[family-name:var(--font-script)] text-[20px] text-white/85">{kicker}</span>}
     <h1 class="text-[38px] leading-tight text-white lg:text-[52px]">{title}</h1>

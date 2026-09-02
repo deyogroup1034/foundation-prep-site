@@ -98,6 +98,27 @@ Neither is required to build or run; the form degrades gracefully without them.
         nowhere; `2023-2024-Academic-Calendar.pdf` and `-1.pdf` are duplicates.
       - `/tuition-fees` is a bare PDF embed with no HTML summary.
 
+## Accessibility: inherited contrast failures
+
+These are the **live site's colour values, reproduced faithfully**. They were not
+introduced by the port, and none were changed, because doing so would alter the
+brand palette — that's the school's call. Measured against WCAG 2.1 AA:
+
+| Pair | Ratio | Needs | Where |
+|---|---|---|---|
+| White on hero gold `#EBC306` | **1.70:1** | 4.5:1 | "Request Information" button |
+| White on teal `#59BABE` | 2.28:1 | 4.5:1 | Contact card on `/contacts` |
+| Leaf green `#6AA84F` on white | 2.87:1 | 4.5:1 | "Read More" link in the home testimonial |
+| White on Donate green `#619935` | 3.43:1 | 4.5:1 | "Donate Now" button |
+| White on brand green `#169F49` | 3.45:1 | 4.5:1 | Main nav links |
+| `#747C84` on white | 4.23:1 | 4.5:1 | Home tile labels, `h6` |
+
+The hero button is the one worth acting on first — at 1.70:1 the label is close to
+unreadable for many users. Minimal fixes that keep the palette recognisable:
+darken the gold to about `#8A7203` for white text, or keep the gold and switch the
+label to near-black. The nav and Donate greens clear AA at 18px+; bumping those
+labels one step, or darkening the greens ~15%, closes the gap.
+
 ## Known dependency advisories
 
 `npm audit` reports advisories in `astro`, `sharp` and `path-to-regexp` whose only

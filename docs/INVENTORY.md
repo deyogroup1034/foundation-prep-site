@@ -315,6 +315,11 @@ No GA4, GTM, or any beacon on the live site. Adding the fleet placeholder only.
 `2023-2024-Academic-Calendar.pdf` and `-1.pdf` are the same document; four calendar PDFs are linked
 from nowhere. Shipping them all to keep old links alive.
 
+**5.11 — colour contrast fails WCAG AA in six places**
+Inherited from the live palette, not introduced by the port. Worst is white on the
+hero gold `#EBC306` at **1.70:1** against a 4.5:1 requirement. Full table and
+suggested minimal fixes in `README.md`.
+
 ---
 
 ## 6. Questions

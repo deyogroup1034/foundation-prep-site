@@ -21,3 +21,6 @@ yarn-error.log*
 
 # WordPress source material (2MB XML + 321MB uploads) stays local-only
 source/
+
+# Screenshot comparisons (gitignored — local review only)
+screenshots/
