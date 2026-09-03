@@ -16,7 +16,8 @@
     "@astrojs/vercel": "^8.2.11",
     "astro": "^5.16.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "resend": "^6.26.0"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

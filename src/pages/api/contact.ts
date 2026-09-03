@@ -1,4 +1,8 @@
 import type { APIRoute } from 'astro';
+import { isTestSubmission, postLeadToDeyoDash } from '@/lib/deyo';
+import { sendEmail } from '@/lib/email';
+import { verifyTurnstile } from '@/lib/turnstile-verify';
+import { BIZ } from '@/data/site';
 
 // On-demand: this route runs as a Vercel serverless function rather than
 // being prerendered. Everything else on the site stays static.
@@ -11,8 +15,11 @@ interface ContactPayload {
   message?: string;
   /** Honeypot field — humans never see it; a non-empty value means a bot. */
   company?: string;
-  /** Turnstile token, present once PUBLIC_TURNSTILE_SITE_KEY is configured. */
+  /** Turnstile token; present in the form data once the widget has rendered
+   * and completed (implicit render via the cf-turnstile div in LeadForm). */
   'cf-turnstile-response'?: string;
+  /** Deyo Dash synthetic form-delivery test marker (shared fleet secret). */
+  deyo_test?: string;
 }
 
 const json = (data: unknown, status = 200) =>
@@ -21,28 +28,12 @@ const json = (data: unknown, status = 200) =>
     headers: { 'Content-Type': 'application/json' },
   });
 
-async function verifyTurnstile(token: string | undefined, ip: string | null): Promise<boolean> {
-  const secret = import.meta.env.TURNSTILE_SECRET_KEY;
-  // Not configured yet → skip verification rather than reject every lead.
-  if (!secret) return true;
-  if (!token) return false;
-
-  const body = new FormData();
-  body.append('secret', secret);
-  body.append('response', token);
-  if (ip) body.append('remoteip', ip);
-
-  try {
-    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      body,
-    });
-    const out = (await res.json()) as { success?: boolean };
-    return out.success === true;
-  } catch {
-    // A network failure against the verifier shouldn't drop a real inquiry.
-    return true;
-  }
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
@@ -67,17 +58,87 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return json({ ok: false, error: 'Please provide your name, a valid email, and a phone number.' }, 422);
   }
 
-  if (!(await verifyTurnstile(body['cf-turnstile-response'], clientAddress ?? null))) {
+  // Synthetic form-delivery test (Deyo Dash monitoring). The marker must
+  // match the fleet shared secret, so nothing external can reach this path.
+  // It runs the same validation, then routes straight to the webhook flagged
+  // `test: true` (recorded as a form_delivery health result, never a lead).
+  if (isTestSubmission(body.deyo_test)) {
+    const delivered = await postLeadToDeyoDash({
+      name,
+      email,
+      detail: { phone: body.phone, message },
+      test: true,
+    });
+    return json({ ok: delivered, deyo_test: delivered ? 'delivered' : 'webhook-failed' }, delivered ? 200 : 502);
+  }
+
+  // Fleet-standard bot gate: verify the Turnstile token server-side before
+  // accepting the lead. Enforced only once TURNSTILE_SECRET_KEY is
+  // configured, so the form keeps working (honeypot-only) in the meantime.
+  const human = await verifyTurnstile(body['cf-turnstile-response'], clientAddress ?? null);
+  if (!human) {
     return json({ ok: false, error: 'Could not verify that you are human. Please try again.' }, 422);
   }
 
-  // PLACEHOLDER — lead delivery is not wired up yet. Next step: POST the lead
-  // to the Deyo Dash intake webhook (fleet standard; see hole-in-one-site's
-  // src/lib/deyo.ts for the pattern), then add the synthetic form-delivery
-  // test marker so Dash's form monitoring can verify the chain. Notifications
-  // on the WordPress site went to info@foundationprep.com, subject
-  // "Information Request".
-  console.log('[lead:placeholder]', { name, email, phone: body.phone, message });
+  // Always in the function logs, whatever the delivery channels do.
+  console.log('New contact form submission:', { name, email, phone: body.phone, message });
+
+  // Lead delivery, two channels: email to the school (Resend — activates
+  // once RESEND_API_KEY is set) and the Deyo Dash webhook for monitoring and
+  // reporting. Either alone counts as delivered. The live WordPress form
+  // notified info@foundationprep.com, subject "Information Request" — same
+  // destination and subject here via BIZ.email.
+  const footer =
+    'This notification was sent automatically by the website contact form. ' +
+    "To respond, reply to this email (it goes to the visitor's address) or call them directly.";
+  const text = [
+    `Name: ${name}`,
+    `Email: ${email}`,
+    `Phone: ${body.phone ?? ''}`,
+    '',
+    message || '(no message)',
+    '',
+    '—',
+    footer,
+  ].join('\n');
+  const html = `
+    <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+    <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+    <p><strong>Phone:</strong> ${escapeHtml(body.phone ?? '')}</p>
+    <hr />
+    <p>${escapeHtml(message || '(no message)').replace(/\n/g, '<br />')}</p>
+    <hr />
+    <p style="color:#666;font-size:12px">${footer}</p>
+  `;
+
+  const emailResult = await sendEmail({
+    to: import.meta.env.CONTACT_TO_EMAIL ?? BIZ.email,
+    replyTo: email,
+    subject: `[Website] Information Request — ${name}`,
+    text,
+    html,
+  });
+  const emailConfigured = emailResult.error?.name !== 'missing_api_key';
+  const emailOk = emailConfigured && !emailResult.error;
+  if (emailConfigured && emailResult.error) {
+    console.error('Resend error:', emailResult.error);
+  }
+
+  const webhookOk = await postLeadToDeyoDash({
+    name,
+    email,
+    detail: { phone: body.phone, message },
+  });
+
+  // Pre-launch (email unconfigured) the log + webhook are the record, so the
+  // visitor still gets a success. Once email is live, only fail the visitor
+  // when NO channel delivered — never lose a lead silently.
+  if (emailConfigured && !emailOk && !webhookOk) {
+    return json(
+      { ok: false, error: `We couldn't send your message right now. Please call ${BIZ.phone} and we'll help right away.` },
+      500,
+    );
+  }
 
   return json({ ok: true });
 };

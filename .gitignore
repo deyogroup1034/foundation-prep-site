@@ -24,3 +24,6 @@ source/
 
 # Screenshot comparisons (gitignored — local review only)
 screenshots/
+
+# Claude Code session state
+.claude/
