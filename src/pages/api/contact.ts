@@ -85,9 +85,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   // Lead delivery, two channels: email to the school (Resend — activates
   // once RESEND_API_KEY is set) and the Deyo Dash webhook for monitoring and
-  // reporting. Either alone counts as delivered. The live WordPress form
-  // notified info@foundationprep.com, subject "Information Request" — same
-  // destination and subject here via BIZ.email.
+  // reporting. Either alone counts as delivered. Destination matches the
+  // live WordPress form (info@foundationprep.com, via BIZ.email).
   const footer =
     'This notification was sent automatically by the website contact form. ' +
     "To respond, reply to this email (it goes to the visitor's address) or call them directly.";
@@ -114,7 +113,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const emailResult = await sendEmail({
     to: import.meta.env.CONTACT_TO_EMAIL ?? BIZ.email,
     replyTo: email,
-    subject: `[Website] Information Request — ${name}`,
+    subject: `New Lead — ${name}`,
     text,
     html,
   });

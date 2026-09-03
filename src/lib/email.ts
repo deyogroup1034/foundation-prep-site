@@ -8,10 +8,12 @@ let resend: Resend | null = null;
 // Default sender: the fleet's already-verified mail.deyone.com sending
 // domain (the same one Fabstone uses), not Resend's onboarding sandbox — so
 // email works the moment RESEND_API_KEY is set, with no separate DNS
-// verification step for foundationprep.com. Override via RESEND_FROM_EMAIL
-// once/if the school wants mail sent from their own domain instead.
-const DEFAULT_FROM =
-  import.meta.env.RESEND_FROM_EMAIL ?? 'Foundation Preparatory Academy <noreply@mail.deyone.com>';
+// verification step for foundationprep.com. "notifications@" rather than
+// "noreply@" because the footer tells the school to reply (replies route to
+// the visitor's address via replyTo, not to this sender). Override via
+// RESEND_FROM_EMAIL once/if the school wants mail sent from their own domain
+// instead.
+const DEFAULT_FROM = import.meta.env.RESEND_FROM_EMAIL ?? 'Your Website <notifications@mail.deyone.com>';
 
 export type SendEmailParams = {
   to: string | string[];
