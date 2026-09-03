@@ -84,7 +84,7 @@ export default function MobileNav({ nav, currentStudents, phone, donate }: Props
         onClick={() => setOpen(true)}
         aria-label="Open menu"
         aria-expanded={open}
-        className="flex h-10 w-10 flex-col items-center justify-center gap-[5px] xl:hidden"
+        className="flex h-10 w-10 flex-col items-center justify-center gap-[5px] lg:hidden"
       >
         <span className="block h-[2px] w-6 bg-white" />
         <span className="block h-[2px] w-6 bg-white" />
@@ -92,7 +92,7 @@ export default function MobileNav({ nav, currentStudents, phone, donate }: Props
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-[100] xl:hidden">
+        <div className="fixed inset-0 z-[100] lg:hidden">
           <button
             type="button"
             aria-label="Close menu"

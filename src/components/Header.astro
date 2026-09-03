@@ -94,7 +94,7 @@ const renderDepth = (items: NavItem[]) => items;
   <!-- Main nav row: #169F49 on inner pages, transparent over the home hero -->
   <div class:list={[transparent ? 'bg-transparent' : 'bg-[color:var(--color-brand)]']}>
     <div class="wrap">
-    <nav aria-label="Main" class="hidden justify-end py-[6px] xl:flex">
+    <nav aria-label="Main" class="hidden justify-end py-[6px] lg:flex">
       <ul class="flex items-center">
         {
           renderDepth(NAV).map((item) => (
@@ -105,14 +105,14 @@ const renderDepth = (items: NavItem[]) => items;
                 rel={item.external ? 'noopener noreferrer' : undefined}
                 aria-current={isCurrent(item.href) ? 'page' : undefined}
                 class:list={[
-                  'block whitespace-nowrap px-[38px] py-[5px] font-[family-name:var(--font-head)] text-[15px] font-medium uppercase leading-[22px] text-white transition-opacity hover:opacity-75 2xl:px-[51px]',
+                  'block whitespace-nowrap px-3 py-[5px] font-[family-name:var(--font-head)] text-[15px] font-medium uppercase leading-[22px] text-white transition-opacity hover:opacity-75 xl:px-6 2xl:px-[42px]',
                   isCurrent(item.href) && 'underline underline-offset-8',
                 ]}
               >
                 {item.label}
               </a>
               {item.children && (
-                <ul class="invisible absolute left-0 top-full z-50 w-[236px] translate-y-1 bg-[color:var(--color-band-alt)] py-[21px] opacity-0 shadow-[1px_1px_2px_rgba(0,0,0,0.2)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                <ul class="invisible absolute left-0 top-full z-50 w-[210px] translate-y-1 bg-[color:var(--color-band-alt)] py-[18px] opacity-0 shadow-[1px_1px_2px_rgba(0,0,0,0.2)] transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
                   {item.children.map((child) => (
                     <li class="group/l2 relative">
                       <a
@@ -125,30 +125,22 @@ const renderDepth = (items: NavItem[]) => items;
                         {child.children && <span aria-hidden="true">&rsaquo;</span>}
                       </a>
                       {child.children && (
-                        <ul class="invisible absolute left-full top-0 z-50 w-[216px] bg-[color:var(--color-band-alt)] py-[21px] opacity-0 shadow-[1px_1px_2px_rgba(0,0,0,0.2)] transition-opacity duration-200 group-hover/l2:visible group-hover/l2:opacity-100 group-focus-within/l2:visible group-focus-within/l2:opacity-100">
+                        <ul class="invisible absolute left-full top-0 z-50 w-[190px] bg-[color:var(--color-band-alt)] py-[18px] opacity-0 shadow-[1px_1px_2px_rgba(0,0,0,0.2)] transition-opacity duration-200 group-hover/l2:visible group-hover/l2:opacity-100 group-focus-within/l2:visible group-focus-within/l2:opacity-100">
+                          {/* Desktop flyouts stop here (3 levels): the fourth level
+                              (grade/subject anchors, e.g. Kindergarten under Primary)
+                              would push the hover panel past the viewport edge at
+                              common laptop widths. Those anchors are still reachable
+                              on the Primary/Elementary/Secondary page itself and in
+                              the mobile drawer, which stacks vertically with no
+                              overflow risk — see MobileNav.tsx's unbounded Level(). */}
                           {child.children.map((gc) => (
-                            <li class="group/l3 relative">
+                            <li>
                               <a
                                 href={gc.href}
-                                class="flex items-center justify-between gap-2 px-6 py-[5px] font-[family-name:var(--font-head)] text-[15px] font-medium uppercase leading-[22px] text-[color:var(--color-body)] transition-colors hover:text-[color:var(--color-brand)]"
+                                class="block px-6 py-[5px] font-[family-name:var(--font-head)] text-[15px] font-medium uppercase leading-[22px] text-[color:var(--color-body)] transition-colors hover:text-[color:var(--color-brand)]"
                               >
-                                <span>{gc.label}</span>
-                                {gc.children && <span aria-hidden="true">&rsaquo;</span>}
+                                {gc.label}
                               </a>
-                              {gc.children && (
-                                <ul class="invisible absolute left-full top-0 z-50 w-[200px] bg-[color:var(--color-band-alt)] py-[21px] opacity-0 shadow-[1px_1px_2px_rgba(0,0,0,0.2)] transition-opacity duration-200 group-hover/l3:visible group-hover/l3:opacity-100 group-focus-within/l3:visible group-focus-within/l3:opacity-100">
-                                  {gc.children.map((ggc) => (
-                                    <li>
-                                      <a
-                                        href={ggc.href}
-                                        class="block px-6 py-[5px] font-[family-name:var(--font-head)] text-[15px] font-medium uppercase leading-[22px] text-[color:var(--color-body)] transition-colors hover:text-[color:var(--color-brand)]"
-                                      >
-                                        {ggc.label}
-                                      </a>
-                                    </li>
-                                  ))}
-                                </ul>
-                              )}
                             </li>
                           ))}
                         </ul>

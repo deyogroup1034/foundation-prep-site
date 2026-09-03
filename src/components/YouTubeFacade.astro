@@ -9,8 +9,14 @@ interface Props {
   params?: string;
 }
 const { id, title, params = 'rel=0&modestbranding=1&autoplay=1' } = Astro.props;
-const poster = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
-const posterFallback = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+// maxresdefault doesn't exist for every video; when it's missing, YouTube's
+// CDN returns HTTP 404 with a tiny 120x90 gray placeholder JPEG *body*, which
+// the browser decodes fine — so <img onerror> never fires and the "poster"
+// ends up as that placeholder stretched to fill the frame. sddefault (640x480)
+// is universally available, so it's the safe default; the client script below
+// probes maxresdefault's real pixel dimensions and only upgrades to it when
+// it's genuinely a full-size thumbnail.
+const poster = `https://i.ytimg.com/vi/${id}/sddefault.jpg`;
 ---
 
 <div
@@ -27,8 +33,7 @@ const posterFallback = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
     width="1280"
     height="720"
     class="h-full w-full object-cover transition-opacity group-hover:opacity-90"
-    data-fallback={posterFallback}
-    onerror="if(this.dataset.fallback&&this.src!==this.dataset.fallback){this.src=this.dataset.fallback;}"
+    data-yt-poster
   />
   <button
     type="button"
@@ -44,7 +49,19 @@ const posterFallback = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
 </div>
 
 <script>
+  // Upgrade the poster to maxresdefault when it's a real 1280x720 thumbnail
+  // (the 404 placeholder decodes at 120x90, so that's the cutoff).
   document.querySelectorAll<HTMLElement>('[data-yt-facade]').forEach((el) => {
+    const img = el.querySelector<HTMLImageElement>('[data-yt-poster]');
+    const id = el.dataset.ytId;
+    if (img && id) {
+      const probe = new Image();
+      probe.onload = () => {
+        if (probe.naturalWidth > 120) img.src = probe.src;
+      };
+      probe.src = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
+    }
+
     el.addEventListener(
       'click',
       () => {

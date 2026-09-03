@@ -41,19 +41,14 @@ const CALENDARS = [
                 )}
               </div>
 
-              <object
-                data={cal.file}
-                type="application/pdf"
+              {/* <iframe> has no real "fallback content" semantics — unlike
+                  <object>, children are never rendered as a fallback, so the
+                  failure case is covered by the download button below. */}
+              <iframe
+                src={cal.file}
+                title={`${cal.year} academic calendar PDF`}
                 class="mt-6 h-[70vh] min-h-[520px] w-full border border-[#e2e4e7]"
-              >
-                <p class="p-8 text-center">
-                  Your browser can&rsquo;t display the PDF inline.{' '}
-                  <a href={cal.file} class="text-[color:var(--color-brand)] underline">
-                    Download the {cal.year} academic calendar
-                  </a>
-                  .
-                </p>
-              </object>
+              />
 
               <p class="mt-6">
                 <a href={cal.file} class="btn-brand" download>

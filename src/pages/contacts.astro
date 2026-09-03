@@ -5,11 +5,25 @@ import LeadForm from '@/components/LeadForm';
 import { BIZ, META, telHref } from '@/data/site';
 
 const meta = META.contacts;
-const q = encodeURIComponent(
-  `${BIZ.address.street.replace('St.', 'Street')}, ${BIZ.address.city}, ${BIZ.address.state} ${BIZ.address.zip}`,
-);
-// Same embed the live page used, minus the tracking-free `output=embed` form.
-const mapSrc = `https://maps.google.com/maps?t=m&output=embed&iwloc=near&z=13&q=${q}`;
+
+// The live page's `maps.google.com/maps?output=embed` iframe (no API key) has
+// been retired by Google — it now 404s with X-Frame-Options: SAMEORIGIN, both
+// here and on the live WordPress site itself (confirmed 2026-09-03; this is
+// not something the port broke). OpenStreetMap's own embed needs no API key
+// and is freely framable, so the map is OSM centered on BIZ.coords (resolved
+// from the live footer's Google Maps link) — but OSM's embed now requires
+// WebGL and shows an ugly "your browser doesn't support WebGL" error without
+// it, with no built-in fallback. A community static-tile proxy that used to
+// sidestep that is DNS-dead (checked 2026-09-03), so rather than depend on a
+// second unreliable free map service, the script below feature-detects WebGL
+// and only loads the OSM iframe when it's actually supported; everyone else
+// gets a static "Get Directions" card instead of a broken map. The teal
+// contact card and the address's link to BIZ.mapUrl work either way.
+const { lat, lon } = BIZ.coords;
+const D_LON = 0.006;
+const D_LAT = 0.004;
+const bbox = [lon - D_LON, lat - D_LAT, lon + D_LON, lat + D_LAT].join(',');
+const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`;
 
 const contactSchema = {
   '@context': 'https://schema.org',
@@ -24,15 +38,28 @@ const contactSchema = {
        left it without an h1. Keep the design and give the page a heading. -->
   <h1 class="sr-only">Contact Foundation Preparatory Academy</h1>
 
-  <!-- Map with the contact card overlaid, as on the live page -->
+  <!-- Map with the contact card overlaid, as on the live page. The iframe's
+       src is only set by the WebGL-check script below; a static "Get
+       Directions" fallback is what actually ships without JS or without
+       WebGL, so nothing here is ever visibly broken. -->
   <section class="relative pt-[150px] lg:pt-[170px]">
     <div class="relative h-[420px] w-full overflow-hidden bg-[#e8eaed] lg:h-[520px]">
       <iframe
-        src={mapSrc}
+        data-osm-src={mapSrc}
         title={`Map showing ${BIZ.name} at ${BIZ.address.street}, ${BIZ.address.city}, ${BIZ.address.state}`}
-        loading="lazy"
         referrerpolicy="no-referrer-when-downgrade"
-        class="h-full w-full border-0"></iframe>
+        class="hidden h-full w-full border-0"
+        data-map-frame></iframe>
+
+      <div class="flex h-full w-full flex-col items-center justify-center gap-4 px-6 text-center" data-map-fallback>
+        <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#8a9199" stroke-width="1.6" aria-hidden="true">
+          <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"></path>
+        </svg>
+        <p class="max-w-[320px] text-[15px] text-[#5d646b]">
+          {BIZ.address.street.replace('St.', 'Street')}, {BIZ.address.city}, {BIZ.address.state} {BIZ.address.zip}
+        </p>
+        <a href={BIZ.mapUrl} target="_blank" rel="noopener noreferrer" class="btn-brand">Get Directions</a>
+      </div>
 
       <div class="pointer-events-none absolute inset-0">
         <div class="wrap flex h-full items-center justify-end">
@@ -78,3 +105,24 @@ const contactSchema = {
     </div>
   </section>
 </Layout>
+
+<script>
+  const frame = document.querySelector<HTMLIFrameElement>('[data-map-frame]');
+  const fallback = document.querySelector<HTMLElement>('[data-map-fallback]');
+  const src = frame?.dataset.osmSrc;
+
+  const hasWebgl = (() => {
+    try {
+      const canvas = document.createElement('canvas');
+      return !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+    } catch {
+      return false;
+    }
+  })();
+
+  if (frame && fallback && src && hasWebgl) {
+    frame.src = src;
+    frame.classList.remove('hidden');
+    fallback.classList.add('hidden');
+  }
+</script>

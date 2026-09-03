@@ -14,12 +14,11 @@ const PDF = '/tuition-fees-summary-26-27.pdf';
   <section class="py-14 lg:py-20">
     <div class="wrap">
       <div class="mx-auto max-w-[900px]">
-        <object data={PDF} type="application/pdf" class="h-[70vh] min-h-[520px] w-full border border-[#e2e4e7]">
-          <p class="p-8 text-center">
-            Your browser can&rsquo;t display the PDF inline.
-            <a href={PDF} class="text-[color:var(--color-brand)] underline">Download the tuition &amp; fees summary</a>.
-          </p>
-        </object>
+        {/* <iframe> has no real "fallback content" semantics in HTML — unlike
+            <object>, children are never rendered as a fallback, so the failure
+            case is covered by the always-visible download button below
+            instead, not by iframe children. */}
+        <iframe src={PDF} title="Tuition &amp; fees summary PDF" class="h-[70vh] min-h-[520px] w-full border border-[#e2e4e7]" />
 
         <p class="mt-8 text-center">
           <a href={PDF} class="btn-brand" download>Click here to Download File</a>

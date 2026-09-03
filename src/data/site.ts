@@ -16,6 +16,10 @@ export const BIZ = {
   },
   /* The live footer links the address to this Google Maps short link. */
   mapUrl: 'https://goo.gl/maps/hRiEs8rYLSriXiTE6',
+  /* Resolved from mapUrl (Google's own coordinates for 102 Yaupon St). Used
+     for the /contacts embed — see the note there on why it's OpenStreetMap
+     rather than Google's now-retired keyless embed. */
+  coords: { lat: 29.0339301, lon: -95.4416654 },
   phone: '(979) 401-3721',
   email: 'info@foundationprep.com',
   founded: 2014,
