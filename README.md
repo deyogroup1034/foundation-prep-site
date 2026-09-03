@@ -113,9 +113,16 @@ serverless function (200 valid, 422 invalid).
 - [ ] **Analytics** — Vercel Web Analytics is enabled via the adapter. The
       Cloudflare beacon placeholder is at the bottom of `src/layouts/Layout.astro`.
 - [x] **Register in Deyo Dash** — done; status is `review`. Flip to `active` at launch.
-- [ ] **Domain flip** — `astro.config.mjs` already sets
-      `site: 'https://foundationprep.com'`. Point DNS at Vercel, then confirm the
-      redirects in `REDIRECTS.md` resolve against the live origin.
+- [ ] **Domain flip** — `astro.config.mjs`'s `site` currently points at
+      `https://foundation-prep-site.vercel.app` (deliberately — it must match
+      wherever the site is *currently* reachable, and foundationprep.com still
+      serves WordPress). At the actual DNS cutover, in the same commit:
+      1. Change `site` in `astro.config.mjs` to `https://foundationprep.com`.
+      2. Change the `Sitemap:` line in `public/robots.txt` to match.
+      3. Add `foundationprep.com` as a custom domain on the Vercel project.
+      4. Point DNS at Vercel, then confirm the redirects in `REDIRECTS.md`
+         resolve against the live origin, and re-run canonical/og:image/sitemap
+         checks against the real domain.
 - [ ] **Content decisions for the school** (see `docs/INVENTORY.md` §5):
       - `/2025-26-calendar` — the slug says 2025-26, the page covers 2025-27.
         Preserved as-is; renaming it means another redirect.
