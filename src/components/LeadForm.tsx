@@ -162,10 +162,18 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
       </div>
 
       {/* Honeypot — visually hidden and skipped by keyboard/screen readers.
-          Any value means a bot filled it in. */}
+          Any value means a bot filled it in.
+
+          The field is deliberately NOT named "company": that's a recognised
+          autofill token, so Chrome and password managers filled it with the
+          visitor's organisation and tripped the trap on real submissions. The
+          route returns a silent 200 for a tripped honeypot (so bots learn
+          nothing), which meant genuine leads vanished with the visitor still
+          seeing "Thank you" — no email, no dash entry, nothing in the logs.
+          Keep this name non-semantic so nothing will ever autofill it. */}
       <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
-        <label htmlFor="lf-company">Company</label>
-        <input id="lf-company" name="company" type="text" tabIndex={-1} autoComplete="off" />
+        <label htmlFor="lf-hp">Leave this field empty</label>
+        <input id="lf-hp" name="lf_hp" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
       <Turnstile onToken={setTurnstileToken} onStatus={setTurnstileStatus} />

@@ -14,7 +14,12 @@ interface ContactPayload {
   email?: string;
   phone?: string;
   message?: string;
-  /** Honeypot field — humans never see it; a non-empty value means a bot. */
+  /** Honeypot field — humans never see it; a non-empty value means a bot.
+   *  Deliberately non-semantic: the previous name ("company") is an autofill
+   *  token that browsers filled in for real visitors. */
+  lf_hp?: string;
+  /** Legacy honeypot name, still accepted so a cached page mid-deploy that
+   *  posts the old field doesn't bypass the trap entirely. */
   company?: string;
   /** Turnstile token; present in the form data once the widget has rendered
    * and completed (implicit render via the cf-turnstile div in LeadForm). */
@@ -45,8 +50,17 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return json({ ok: false, error: 'Invalid request body.' }, 400);
   }
 
-  // Honeypot tripped → pretend success so the bot learns nothing.
-  if (body.company) return json({ ok: true });
+  // Honeypot tripped → pretend success so the bot learns nothing. Logged,
+  // because a silent 200 here is indistinguishable from a delivered lead:
+  // when "company" was the field name, browser autofill tripped it on real
+  // submissions and the leads vanished with no trace anywhere.
+  const honeypot = (body.lf_hp ?? body.company ?? '').trim();
+  if (honeypot) {
+    console.warn('Honeypot tripped — discarding submission', {
+      field: body.lf_hp ? 'lf_hp' : 'company',
+    });
+    return json({ ok: true });
+  }
 
   const name = body.name?.trim() ?? '';
   const email = body.email?.trim() ?? '';
