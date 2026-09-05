@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { Turnstile, resetTurnstile, turnstileConfigured, type TurnstileStatus } from './Turnstile';
 
 /**
  * "Get in Touch" — a faithful port of Gravity Forms form 1 as it renders on
@@ -9,19 +10,13 @@ import { useState, type FormEvent } from 'react';
  * reCAPTCHA v2; Turnstile is the fleet standard and avoids the Google
  * cookie. Turnstile only renders once PUBLIC_TURNSTILE_SITE_KEY is set.
  */
-const SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined;
-
-declare global {
-  interface Window {
-    turnstile?: { reset: (widget?: string) => void };
-  }
-}
-
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
 export default function LeadForm({ compact = false }: { compact?: boolean }) {
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileStatus, setTurnstileStatus] = useState<TurnstileStatus>('pending');
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -33,7 +28,10 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        // The widget renders explicitly (see Turnstile.tsx), so its token
+        // lives in React state rather than a hidden input FormData would pick
+        // up. Key name matches what the server route reads.
+        body: JSON.stringify({ ...data, 'cf-turnstile-response': turnstileToken }),
       });
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? 'Something went wrong.');
@@ -42,10 +40,15 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
     } catch (err) {
       setStatus('error');
       setError(err instanceof Error ? err.message : 'Something went wrong.');
-      // Turnstile tokens are single-use. Without resetting, a retry re-submits
-      // the spent token and siteverify rejects it (timeout-or-duplicate), so
-      // every attempt after the first would fail no matter what the visitor does.
-      window.turnstile?.reset();
+      // Turnstile tokens are single-use: the submit above consumed this one
+      // whether or not it succeeded. Without a reset the retry re-sends the
+      // spent token and siteverify rejects it as timeout-or-duplicate, so
+      // every attempt after the first fails no matter what the visitor does.
+      if (turnstileConfigured()) {
+        resetTurnstile();
+        setTurnstileToken(null);
+        setTurnstileStatus('pending');
+      }
     }
   }
 
@@ -105,12 +108,7 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
         <input id="lf-company" name="company" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      {SITE_KEY && (
-        <>
-          <div className="cf-turnstile" data-sitekey={SITE_KEY} data-theme="light" />
-          <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer />
-        </>
-      )}
+      <Turnstile onToken={setTurnstileToken} onStatus={setTurnstileStatus} />
 
       {status === 'error' && (
         <p role="alert" className="text-[14px] text-[#b3261e]">
@@ -121,10 +119,14 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
       <div className="flex justify-end">
         <button
           type="submit"
-          disabled={status === 'sending'}
+          disabled={status === 'sending' || (turnstileConfigured() && turnstileStatus !== 'ready')}
           className="rounded-full bg-[color:var(--color-brand)] px-11 py-[18px] font-[family-name:var(--font-head)] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:bg-[color:var(--color-brand-dark)] disabled:opacity-60"
         >
-          {status === 'sending' ? 'Sending…' : 'Submit'}
+          {status === 'sending'
+            ? 'Sending…'
+            : turnstileConfigured() && turnstileStatus === 'pending'
+              ? 'Checking…'
+              : 'Submit'}
         </button>
       </div>
     </form>
