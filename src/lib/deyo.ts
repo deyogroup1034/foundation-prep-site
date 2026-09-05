@@ -13,7 +13,9 @@
  * safe to paste directly into Vercel.
  */
 
-const DASH_URL = import.meta.env.DEYO_DASH_URL ?? 'https://deyo-dash.deyogroup.workers.dev';
+import { env, envOr } from './env';
+
+const DASH_URL = () => envOr('DEYO_DASH_URL', 'https://deyo-dash.deyogroup.workers.dev');
 
 export type LeadPayload = {
   name?: string;
@@ -24,20 +26,20 @@ export type LeadPayload = {
 
 /** True when a submission carries the valid test marker (shared secret). */
 export function isTestSubmission(marker: unknown): boolean {
-  const secret = import.meta.env.LEAD_INGEST_SECRET;
+  const secret = env('LEAD_INGEST_SECRET');
   return Boolean(secret && typeof marker === 'string' && marker === secret);
 }
 
 /** Report a submission to Deyo Dash. Returns whether the webhook landed. */
 export async function postLeadToDeyoDash(payload: LeadPayload): Promise<boolean> {
-  const secret = import.meta.env.LEAD_INGEST_SECRET;
-  const siteId = import.meta.env.DEYO_SITE_ID;
+  const secret = env('LEAD_INGEST_SECRET');
+  const siteId = env('DEYO_SITE_ID');
   if (!secret || !siteId) {
     console.warn('Deyo lead webhook skipped — LEAD_INGEST_SECRET/DEYO_SITE_ID not set');
     return false;
   }
   try {
-    const res = await fetch(`${DASH_URL}/api/leads`, {
+    const res = await fetch(`${DASH_URL()}/api/leads`, {
       method: 'POST',
       // Never follow redirects: a stale/misconfigured ingest that bounces to a
       // login page must read as failure, not as a 200 from the login HTML.

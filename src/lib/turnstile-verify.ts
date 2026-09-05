@@ -3,8 +3,10 @@
  * contact API route. Enforced only once TURNSTILE_SECRET_KEY is configured,
  * so the form keeps working (honeypot-only) while the widget is being set up.
  */
+import { env } from './env';
+
 export async function verifyTurnstile(token: string | null | undefined, ip?: string | null): Promise<boolean> {
-  const secret = import.meta.env.TURNSTILE_SECRET_KEY;
+  const secret = env('TURNSTILE_SECRET_KEY');
   if (!secret) return true; // not configured yet — widget isn't rendered either
   if (!token) return false;
   try {

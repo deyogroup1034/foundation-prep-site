@@ -34,4 +34,4 @@ Disallow: /
 User-agent: Meta-ExternalAgent
 Disallow: /
 
-Sitemap: https://foundation-prep-site.vercel.app/sitemap.xml
+Sitemap: https://foundationprep.com/sitemap.xml

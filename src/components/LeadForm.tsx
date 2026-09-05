@@ -11,6 +11,12 @@ import { useState, type FormEvent } from 'react';
  */
 const SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined;
 
+declare global {
+  interface Window {
+    turnstile?: { reset: (widget?: string) => void };
+  }
+}
+
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
 export default function LeadForm({ compact = false }: { compact?: boolean }) {
@@ -36,6 +42,10 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
     } catch (err) {
       setStatus('error');
       setError(err instanceof Error ? err.message : 'Something went wrong.');
+      // Turnstile tokens are single-use. Without resetting, a retry re-submits
+      // the spent token and siteverify rejects it (timeout-or-duplicate), so
+      // every attempt after the first would fail no matter what the visitor does.
+      window.turnstile?.reset();
     }
   }
 

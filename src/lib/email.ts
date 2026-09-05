@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { env, envOr } from './env';
 
 // Instantiated lazily inside sendEmail: the Resend constructor throws when no
 // API key is available, and this module must stay importable with email
@@ -13,7 +14,9 @@ let resend: Resend | null = null;
 // the visitor's address via replyTo, not to this sender). Override via
 // RESEND_FROM_EMAIL once/if the school wants mail sent from their own domain
 // instead.
-const DEFAULT_FROM = import.meta.env.RESEND_FROM_EMAIL ?? 'Your Website <notifications@mail.deyone.com>';
+// envOr (not ??) so a blank RESEND_FROM_EMAIL falls back instead of sending
+// an empty From, which Resend rejects outright. See src/lib/env.ts.
+const DEFAULT_FROM = () => envOr('RESEND_FROM_EMAIL', 'Your Website <notifications@mail.deyone.com>');
 
 export type SendEmailParams = {
   to: string | string[];
@@ -26,8 +29,8 @@ export type SendEmailParams = {
 
 /** Thin wrapper around the Resend client; reports a typed error when the
  * API key isn't configured yet instead of throwing. */
-export async function sendEmail({ to, subject, html, text, from = DEFAULT_FROM, replyTo }: SendEmailParams) {
-  const apiKey = import.meta.env.RESEND_API_KEY;
+export async function sendEmail({ to, subject, html, text, from, replyTo }: SendEmailParams) {
+  const apiKey = env('RESEND_API_KEY');
   if (!apiKey) {
     return {
       data: null,
@@ -38,5 +41,5 @@ export async function sendEmail({ to, subject, html, text, from = DEFAULT_FROM, 
     };
   }
   resend ??= new Resend(apiKey);
-  return resend.emails.send({ from, to, subject, html, text, replyTo });
+  return resend.emails.send({ from: from ?? DEFAULT_FROM(), to, subject, html, text, replyTo });
 }

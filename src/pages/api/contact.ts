@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { isTestSubmission, postLeadToDeyoDash } from '@/lib/deyo';
 import { sendEmail } from '@/lib/email';
 import { verifyTurnstile } from '@/lib/turnstile-verify';
+import { envAny } from '@/lib/env';
 import { BIZ } from '@/data/site';
 
 // On-demand: this route runs as a Vercel serverless function rather than
@@ -111,7 +112,12 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   `;
 
   const emailResult = await sendEmail({
-    to: import.meta.env.CONTACT_TO_EMAIL ?? BIZ.email,
+    // Accept either name: CONTACT_TO_EMAIL is this repo's original, but the
+    // Vercel project was configured with LEAD_TO_EMAIL (the fabstone-design
+    // convention), so honour both rather than silently ignoring the one that
+    // was actually set. Falls back to BIZ.email (info@foundationprep.com),
+    // which is where the live WordPress form delivered.
+    to: envAny('CONTACT_TO_EMAIL', 'LEAD_TO_EMAIL') ?? BIZ.email,
     replyTo: email,
     subject: `New Lead — ${name}`,
     text,
