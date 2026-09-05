@@ -1,5 +1,6 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Turnstile, resetTurnstile, turnstileConfigured, type TurnstileStatus } from './Turnstile';
+import { BIZ } from '@/data/site';
 
 /**
  * "Get in Touch" — a faithful port of Gravity Forms form 1 as it renders on
@@ -7,20 +8,34 @@ import { Turnstile, resetTurnstile, turnstileConfigured, type TurnstileStatus } 
  * carrying the labels (the live form hides them visually).
  *
  * Spam protection: honeypot + Cloudflare Turnstile. The live form used
- * reCAPTCHA v2; Turnstile is the fleet standard and avoids the Google
- * cookie. Turnstile only renders once PUBLIC_TURNSTILE_SITE_KEY is set.
+ * reCAPTCHA v2; Turnstile is the fleet standard and avoids the Google cookie.
+ * Turnstile only renders once PUBLIC_TURNSTILE_SITE_KEY is set.
+ *
+ * Submit is never disabled on Turnstile state. The widget loads with the form,
+ * so a fast filler can beat it, and a network that can't reach Cloudflare would
+ * otherwise leave a permanently greyed-out button with no explanation. Instead:
+ * a submit made before the token lands is queued and released when it arrives,
+ * and if the widget genuinely fails the visitor gets the phone number rather
+ * than a dead end.
  */
 type Status = 'idle' | 'sending' | 'sent' | 'error';
+
+/** How long to hold a queued submit before falling back to "call us". */
+const QUEUE_TIMEOUT_MS = 12_000;
 
 export default function LeadForm({ compact = false }: { compact?: boolean }) {
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileStatus, setTurnstileStatus] = useState<TurnstileStatus>('pending');
+  const [queued, setQueued] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  async function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
+  const callUs = `We couldn't complete the security check. Please call ${BIZ.phone} and we'll help right away.`;
+
+  async function send(token: string | null) {
+    const form = formRef.current;
+    if (!form) return;
     const data = Object.fromEntries(new FormData(form).entries());
     setStatus('sending');
     setError('');
@@ -28,10 +43,10 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // The widget renders explicitly (see Turnstile.tsx), so its token
-        // lives in React state rather than a hidden input FormData would pick
-        // up. Key name matches what the server route reads.
-        body: JSON.stringify({ ...data, 'cf-turnstile-response': turnstileToken }),
+        // The widget renders explicitly (see Turnstile.tsx), so its token lives
+        // in React state rather than a hidden input FormData would pick up.
+        // Key name matches what the server route reads.
+        body: JSON.stringify({ ...data, 'cf-turnstile-response': token }),
       });
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? 'Something went wrong.');
@@ -52,6 +67,51 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
     }
   }
 
+  function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (turnstileConfigured() && !turnstileToken) {
+      // Nothing will ever pass the gate — don't burn the visitor's submit on a
+      // request we know is rejected; point them at the phone instead.
+      if (turnstileStatus === 'failed') {
+        setError(callUs);
+        setStatus('error');
+        return;
+      }
+      // Still solving. Hold the send until the token lands.
+      setError('');
+      setStatus('sending');
+      setQueued(true);
+      return;
+    }
+
+    void send(turnstileToken);
+  }
+
+  // Release a queued send as soon as the widget produces a token, and give up
+  // with the call-us fallback if it never does.
+  useEffect(() => {
+    if (!queued) return;
+    if (turnstileToken) {
+      setQueued(false);
+      void send(turnstileToken);
+      return;
+    }
+    if (turnstileStatus === 'failed') {
+      setQueued(false);
+      setError(callUs);
+      setStatus('error');
+      return;
+    }
+    const giveUp = window.setTimeout(() => {
+      setQueued(false);
+      setError(callUs);
+      setStatus('error');
+    }, QUEUE_TIMEOUT_MS);
+    return () => window.clearTimeout(giveUp);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queued, turnstileToken, turnstileStatus]);
+
   if (status === 'sent') {
     return (
       <p
@@ -71,7 +131,7 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
   const area = `${base} rounded-[28px] resize-y`;
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4" noValidate>
+    <form ref={formRef} onSubmit={onSubmit} className="space-y-4" noValidate>
       <div className={compact ? 'space-y-4' : 'grid gap-4 sm:grid-cols-2'}>
         <div>
           <label htmlFor="lf-name" className="sr-only">
@@ -119,14 +179,10 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
       <div className="flex justify-end">
         <button
           type="submit"
-          disabled={status === 'sending' || (turnstileConfigured() && turnstileStatus !== 'ready')}
+          disabled={status === 'sending'}
           className="rounded-full bg-[color:var(--color-brand)] px-11 py-[18px] font-[family-name:var(--font-head)] text-[13px] font-medium uppercase tracking-[0.5px] text-white transition-colors hover:bg-[color:var(--color-brand-dark)] disabled:opacity-60"
         >
-          {status === 'sending'
-            ? 'Sending…'
-            : turnstileConfigured() && turnstileStatus === 'pending'
-              ? 'Checking…'
-              : 'Submit'}
+          {status === 'sending' ? 'Sending…' : 'Submit'}
         </button>
       </div>
     </form>
