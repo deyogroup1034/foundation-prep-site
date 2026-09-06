@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { isTestSubmission, postLeadToDeyoDash } from '@/lib/deyo';
 import { sendEmail } from '@/lib/email';
 import { verifyTurnstile } from '@/lib/turnstile-verify';
-import { envAny } from '@/lib/env';
+import { env, envAny } from '@/lib/env';
 import { BIZ } from '@/data/site';
 
 // On-demand: this route runs as a Vercel serverless function rather than
@@ -73,18 +73,48 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return json({ ok: false, error: 'Please provide your name, a valid email, and a phone number.' }, 422);
   }
 
-  // Synthetic form-delivery test (Deyo Dash monitoring). The marker must
-  // match the fleet shared secret, so nothing external can reach this path.
-  // It runs the same validation, then routes straight to the webhook flagged
-  // `test: true` (recorded as a form_delivery health result, never a lead).
+  // The school's real notification destination. Accept either name:
+  // CONTACT_TO_EMAIL is this repo's original, but the Vercel project was
+  // configured with LEAD_TO_EMAIL (the fabstone-design convention), so honour
+  // both rather than silently ignoring the one that was actually set. Falls
+  // back to BIZ.email (info@foundationprep.com), which is where the live
+  // WordPress form delivered.
+  const deliveryTo = envAny('CONTACT_TO_EMAIL', 'LEAD_TO_EMAIL') ?? BIZ.email;
+
+  // Synthetic form-delivery test (Deyo Dash monitoring, fleet contract v3).
+  // The marker must match the fleet shared secret, so nothing external can
+  // reach this path; the secret stands in for the Turnstile token, and the
+  // honeypot + validation above have already run. It exercises the REAL email
+  // machinery — same Resend key, same sender module — with the destination
+  // hard-overridden to the Deyo probe mailbox: `deliveryTo` (the school's
+  // inbox) is never passed on a test, by construction. Then it reports to the
+  // monitoring webhook flagged `test: true` (recorded as a form_delivery
+  // health result, never a lead), self-reporting probe_sent and the real
+  // delivery destination so the dashboard can audit both.
   if (isTestSubmission(body.deyo_test)) {
+    const probeTo = env('DEYO_FORM_PROBE_EMAIL');
+    const siteId = env('DEYO_SITE_ID');
+    let probeSent = false;
+    if (probeTo && siteId) {
+      const probe = await sendEmail({
+        to: probeTo,
+        subject: `[deyo-probe site:${siteId}] form delivery probe`,
+        text: 'Synthetic delivery probe from the fleet form contract. No action needed.',
+        html: '<p>Synthetic delivery probe from the fleet form contract. No action needed.</p>',
+      });
+      probeSent = !probe.error;
+      if (probe.error) console.error('Probe email failed:', probe.error);
+    }
     const delivered = await postLeadToDeyoDash({
       name,
       email,
-      detail: { phone: body.phone, message },
+      detail: { phone: body.phone, message, probe_sent: probeSent, delivery_to: deliveryTo },
       test: true,
     });
-    return json({ ok: delivered, deyo_test: delivered ? 'delivered' : 'webhook-failed' }, delivered ? 200 : 502);
+    return json(
+      { ok: delivered, deyo_test: delivered ? 'delivered' : 'webhook-failed', probe_sent: probeSent },
+      delivered ? 200 : 502,
+    );
   }
 
   // Fleet-standard bot gate: verify the Turnstile token server-side before
@@ -126,12 +156,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   `;
 
   const emailResult = await sendEmail({
-    // Accept either name: CONTACT_TO_EMAIL is this repo's original, but the
-    // Vercel project was configured with LEAD_TO_EMAIL (the fabstone-design
-    // convention), so honour both rather than silently ignoring the one that
-    // was actually set. Falls back to BIZ.email (info@foundationprep.com),
-    // which is where the live WordPress form delivered.
-    to: envAny('CONTACT_TO_EMAIL', 'LEAD_TO_EMAIL') ?? BIZ.email,
+    to: deliveryTo,
     replyTo: email,
     subject: `New Lead — ${name}`,
     text,

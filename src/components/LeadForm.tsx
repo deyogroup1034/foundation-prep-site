@@ -23,6 +23,17 @@ type Status = 'idle' | 'sending' | 'sent' | 'error';
 /** How long to hold a queued submit before falling back to "call us". */
 const QUEUE_TIMEOUT_MS = 12_000;
 
+/**
+ * Fleet contract v3: Deyo Dash's nightly headless-browser test opens the page
+ * with ?deyo_test=<fleet secret>. Carrying it in the payload makes the server
+ * accept the secret in place of a Turnstile token and reroute delivery to the
+ * monitoring mailbox — a real visitor never has it, and a test can never reach
+ * the school. Only called from event handlers, so `window` is always there.
+ */
+function deyoTestMarker(): string | null {
+  return new URLSearchParams(window.location.search).get('deyo_test');
+}
+
 export default function LeadForm({ compact = false }: { compact?: boolean }) {
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState('');
@@ -37,6 +48,7 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
     const form = formRef.current;
     if (!form) return;
     const data = Object.fromEntries(new FormData(form).entries());
+    const deyoTest = deyoTestMarker();
     setStatus('sending');
     setError('');
     try {
@@ -46,7 +58,11 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
         // The widget renders explicitly (see Turnstile.tsx), so its token lives
         // in React state rather than a hidden input FormData would pick up.
         // Key name matches what the server route reads.
-        body: JSON.stringify({ ...data, 'cf-turnstile-response': token }),
+        body: JSON.stringify({
+          ...data,
+          'cf-turnstile-response': token,
+          ...(deyoTest ? { deyo_test: deyoTest } : {}),
+        }),
       });
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error ?? 'Something went wrong.');
@@ -70,7 +86,11 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    if (turnstileConfigured() && !turnstileToken) {
+    // A synthetic test carries the fleet secret in place of a Turnstile token
+    // (the server accepts it there), so don't queue it waiting for a widget
+    // that may never solve in a headless browser. `deyoTestMarker()` is null
+    // for every real visitor, so their path is untouched.
+    if (!deyoTestMarker() && turnstileConfigured() && !turnstileToken) {
       // Nothing will ever pass the gate — don't burn the visitor's submit on a
       // request we know is rejected; point them at the phone instead.
       if (turnstileStatus === 'failed') {
